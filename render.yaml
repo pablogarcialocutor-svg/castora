@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: castora
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: LASTFM_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
