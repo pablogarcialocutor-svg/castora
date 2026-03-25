@@ -14,23 +14,16 @@
   let loadingStep = 0;
   let loadingProgress = 0;
 
-  // Fase 1 (~0-50s): análisis principal
-  // Pausa (~50-65s): la API libera el contador de tokens
-  // Fase 2 (~65-95s): fuentes externas, opinión, videos
   const LOADING_MESSAGES = [
-    'Leyendo la noticia...',
-    'Analizando el contenido...',
-    'Generando el boletín radial...',
-    'Preparando los datos en contexto...',
-    'Buscando los mejores entrevistados...',
-    'Eligiendo la música para el bloque...',
-    'Redactando los ángulos periodísticos...',
-    'Esperando que la API se libere para la segunda etapa...',
-    'Buscando columnas de opinión sobre el tema...',
-    'Buscando otras fuentes que cubrieron la noticia...',
-    'Buscando videos en YouTube...',
-    'Preparando el material de streaming...',
-    'Últimos retoques...',
+    'Leyendo la nota...',
+    'Construyendo el boletín...',
+    'Analizando el contexto...',
+    'Buscando quién puede hablar de esto...',
+    'Eligiendo la música... esto trabaja como un castor de verdad',
+    'Buscando videos...',
+    'Rastreando otras fuentes...',
+    'Buscando columnas de opinión...',
+    'Vale la pena la espera.',
   ];
 
   // ==========================================
@@ -382,8 +375,8 @@
     loadingStatus.textContent = LOADING_MESSAGES[0];
     loadingBar.style.width = '5%';
 
-    const stepDuration = 6000;
-    const progressStep = 6;
+    const stepDuration = 15000;
+    const progressStep = 9;
 
     loadingInterval = setInterval(() => {
       loadingStep = (loadingStep + 1) % LOADING_MESSAGES.length;
@@ -401,7 +394,7 @@
 
     if (success) {
       loadingBar.style.width = '100%';
-      loadingStatus.textContent = '¡Listo!';
+      loadingStatus.textContent = 'Listo.';
       setTimeout(hideLoading, 600);
     } else {
       hideLoading();

@@ -193,23 +193,23 @@ export async function fetchArticle(url) {
 }
 
 // ==========================================
-// LLAMADA A — Boletín, Resumen, Contexto, Ángulo
+// PASO 2 — Boletín, Resumen, Contexto
 // ==========================================
 
-export async function analyzePartA({ content, title: articleTitle, source: articleSource }) {
+export async function analyzeBoletinResumenContexto({ content, title: articleTitle, source: articleSource }) {
   const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON válido, sin markdown.
 
 NOTICIA:
 ${content.slice(0, 4000)}
 
 JSON:
-{"title":"","source":"","resumen":"4-6 líneas: subtexto e implicancias reales, no descripción mecánica","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"dato":"cifra/fecha/% exacto","traduccion":"comparación cotidiana concreta"}],"angulo":[{"tipo":"critico","titulo":"","contenido":""},{"tipo":"humano","titulo":"","contenido":""},{"tipo":"inesperado","titulo":"","contenido":""}]}
+{"title":"","source":"","resumen":"4-6 líneas: subtexto e implicancias reales, no descripción mecánica","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"dato":"cifra/fecha/% exacto","traduccion":"comparación cotidiana concreta"}]}
 
-REGLAS: titulo ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjetivos valorativos. bajadas: 2-3, ≤200 car c/u, S+V+P, hechos verificables. contexto: 3-6 items con comparaciones tangibles a precios/tiempos cotidianos. angulo: exactamente 3, distintos entre sí. Español rioplatense.`;
+REGLAS: titulo ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjetivos valorativos. bajadas: 2-3, ≤200 car c/u, S+V+P, hechos verificables. contexto: 3-6 items con comparaciones tangibles a precios/tiempos cotidianos. Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 3500,
+    max_tokens: 2000,
     messages: [{ role: 'user', content: prompt }],
   }));
 
@@ -222,6 +222,96 @@ REGLAS: titulo ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjet
   if (!parsed.title && articleTitle) parsed.title = articleTitle;
   if (!parsed.source && articleSource) parsed.source = articleSource;
   return parsed;
+}
+
+// ==========================================
+// PASO 3 — Entrevistas
+// ==========================================
+
+export async function analyzeEntrevistas({ content }) {
+  const prompt = `Producción periodística. Devolvé SOLO JSON puro, sin markdown.
+
+NOTICIA:
+${content.slice(0, 3500)}
+
+{"entrevistas":[{"nombre":"","rol":"","categoria":"experto","justificacion":"perspectiva única que aporta","declaracion":"declaración real con fecha","pregunta":"pregunta específica no obvia"}]}
+
+REGLAS: 10 personas — 3-4 "experto" (académicos/especialistas), 3 "critico" (voces alternativas), 3 "afectado" (impactados directamente). NUNCA protagonistas obvios del hecho. Español rioplatense.`;
+
+  const response = await callWithRetry(() => client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2500,
+    messages: [{ role: 'user', content: prompt }],
+  }));
+
+  let rawText = '';
+  for (const block of response.content) {
+    if (block.type === 'text') rawText += block.text;
+  }
+
+  return parseJsonResponse(rawText);
+}
+
+// ==========================================
+// PASO 4 — Música
+// ==========================================
+
+export async function analyzeMusica({ content }, lastfmTracks = [], recentSongs = []) {
+  const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON puro, sin markdown.
+
+NOTICIA:
+${content.slice(0, 3000)}
+
+{"musica":[{"artista":"","cancion":"","anio":"","genero":"","categoria":"sutil","conexion":"emoción/textura, nunca relación temática","youtube_query":"artista cancion","lastfm_url":null}]}
+
+REGLAS: LA MÚSICA CREA CLIMA EMOCIONAL, NO ILUSTRA EL TEMA. 5 categorías (≥2 canciones c/u, sin repetir artistas): sutil(jazz/tango exp/electrónica/world), nacional(folklore/cumbia/tango/indie, no solo rock), internacional(criterio autoral), clasica(instrumental), esperada(clichés predecibles, conexion empieza "Opción obvia:"). En sutil/nacional/internacional/clasica prohibido título=tema o clichés de protesta. Rioplatense.${lastfmTracks.length > 0 ? `
+
+POOL LAST.FM — priorizá si encajan emocionalmente. Copiá lastfm_url exacto, null si no usás:
+${lastfmTracks.slice(0, 20).map(t => `${t.artist} — ${t.name}${t.url ? ` | ${t.url}` : ''}`).join('\n')}` : ''}${recentSongs.length > 0 ? `
+
+NO REPETIR:
+${recentSongs.slice(0, 15).join('\n')}` : ''}`;
+
+  const response = await callWithRetry(() => client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 3000,
+    messages: [{ role: 'user', content: prompt }],
+  }));
+
+  let rawText = '';
+  for (const block of response.content) {
+    if (block.type === 'text') rawText += block.text;
+  }
+
+  return parseJsonResponse(rawText);
+}
+
+// ==========================================
+// PASO 5 — Ángulo + Streaming
+// ==========================================
+
+export async function analyzeAnguloStreaming({ content }) {
+  const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON puro, sin markdown.
+
+NOTICIA:
+${content.slice(0, 3500)}
+
+{"angulo":[{"tipo":"critico","titulo":"","contenido":""},{"tipo":"humano","titulo":"","contenido":""},{"tipo":"inesperado","titulo":"","contenido":""}],"streaming":{"ganchos":["opción 1","opción 2"],"titulos_youtube":["título 1","título 2"],"descripcion":"SEO 3-4 oraciones","hashtags":["#tag1"]}}
+
+REGLAS: angulo: exactamente 3, genuinamente distintos entre sí. streaming: 2 ganchos, 2 títulos YouTube, ≥8 hashtags. Español rioplatense.`;
+
+  const response = await callWithRetry(() => client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 2000,
+    messages: [{ role: 'user', content: prompt }],
+  }));
+
+  let rawText = '';
+  for (const block of response.content) {
+    if (block.type === 'text') rawText += block.text;
+  }
+
+  return parseJsonResponse(rawText);
 }
 
 // ==========================================
@@ -258,39 +348,6 @@ Devolvé SOLO un array JSON de strings, sin markdown. Los tags deben describir e
   return ['melancholy', 'tension'];
 }
 
-// ==========================================
-// LLAMADA B — Entrevistas, Música, Streaming
-// ==========================================
-
-export async function analyzePartB({ content, title: articleTitle, source: articleSource }, lastfmTracks = [], recentSongs = []) {
-  const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON puro, sin markdown.
-
-NOTICIA:
-${content.slice(0, 3500)}
-
-{"entrevistas":[{"nombre":"","rol":"","categoria":"experto","justificacion":"perspectiva única que aporta","declaracion":"declaración real con fecha","pregunta":"pregunta específica no obvia"}],"musica":[{"artista":"","cancion":"","anio":"","genero":"","categoria":"sutil","conexion":"emoción/textura, nunca relación temática","youtube_query":"artista cancion","lastfm_url":null}],"streaming":{"ganchos":["opción 1","opción 2"],"titulos_youtube":["título 1","título 2"],"descripcion":"SEO 3-4 oraciones","hashtags":["#tag1"]}}
-
-REGLAS: entrevistas: 10 personas (3-4 experto, 3 critico, 3 afectado), nunca protagonistas obvios. musica: emoción/textura que deja la noticia, NO el tema. 5 categorías (≥2 canciones c/u, sin repetir artistas): sutil(jazz/tango exp/electrónica/world), nacional(folklore/cumbia/tango/indie, no solo rock), internacional(criterio autoral), clasica(instrumental), esperada(clichés predecibles, conexion empieza "Opción obvia:"). En sutil/nacional/internacional/clasica prohibido título=tema o clichés de protesta. streaming: 2 ganchos, 2 títulos, ≥8 hashtags. Rioplatense.${lastfmTracks.length > 0 ? `
-
-POOL LAST.FM — priorizá si encajan emocionalmente. Copiá lastfm_url exacto, null si no usás:
-${lastfmTracks.slice(0, 20).map(t => `${t.artist} — ${t.name}${t.url ? ` | ${t.url}` : ''}`).join('\n')}` : ''}${recentSongs.length > 0 ? `
-
-NO REPETIR:
-${recentSongs.slice(0, 15).join('\n')}` : ''}`;
-
-  const response = await callWithRetry(() => client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 5000,
-    messages: [{ role: 'user', content: prompt }],
-  }));
-
-  let rawText = '';
-  for (const block of response.content) {
-    if (block.type === 'text') rawText += block.text;
-  }
-
-  return parseJsonResponse(rawText);
-}
 
 // ==========================================
 // OTRAS FUENTES — cobertura del mismo hecho en otros medios

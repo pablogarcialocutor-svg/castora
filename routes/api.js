@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
-import { fetchArticle, analyzePartA, analyzePartB, fetchOtrasFuentes, fetchOpinion, getMoodTags } from '../services/anthropic.js';
+import { fetchArticle, analyzeBoletinResumenContexto, analyzeEntrevistas, analyzeMusica, analyzeAnguloStreaming, fetchOtrasFuentes, fetchOpinion, getMoodTags } from '../services/anthropic.js';
 import { searchVideos, buildMusicSearchUrl, generateVideoSearchQueries } from '../services/youtube.js';
 import { getTopTracksByTags } from '../services/lastfm.js';
 import { saveAnalysis, getUserAnalyses, getAnalysisById, getRecentMusicFromUser } from '../db/database.js';
@@ -33,95 +33,91 @@ router.post('/process', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'La URL no es válida' });
   }
 
-  try {
-    const articleData = await fetchArticle(url);
+  // Helper: ejecuta un paso y devuelve null si falla, sin romper la cadena
+  async function step(name, fn) {
+    try {
+      const result = await fn();
+      console.log(`[process] ✓ ${name}`);
+      return result;
+    } catch (e) {
+      console.error(`[process] ✗ ${name}:`, e.message);
+      return null;
+    }
+  }
 
+  try {
+    // Paso 1: Leer el artículo
+    console.log('[process] Paso 1: fetch artículo');
+    const articleData = await fetchArticle(url);
     const videoSearchData = generateVideoSearchQueries(articleData);
 
-    // partB necesita mood tags + Last.fm antes de arrancar
-    const partBPromise = (async () => {
-      let lastfmTracks = [];
-      let recentSongs = [];
-      try {
-        recentSongs = getRecentMusicFromUser(req.session.userId, 5);
-      } catch (e) {
-        console.error('[db] getRecentMusicFromUser error:', e.message);
-      }
-      try {
-        const moodTags = await getMoodTags(articleData);
-        console.log(`[lastfm] mood tags: ${moodTags.join(', ')}`);
-        lastfmTracks = await getTopTracksByTags(moodTags);
-      } catch (e) {
-        console.error('[lastfm] enrichment error:', e.message);
-      }
-      return analyzePartB(articleData, lastfmTracks, recentSongs);
-    })();
+    // Paso 2: Boletín + Resumen + Contexto
+    console.log('[process] Paso 2: boletín + resumen + contexto');
+    const brc = await step('boletin/resumen/contexto', () => analyzeBoletinResumenContexto(articleData));
 
-    // ── Tanda 1: análisis principal (más pesado en tokens) ──
-    console.log('[process] Tanda 1: partA + partB');
-    const [resA, resB] = await Promise.allSettled([
-      analyzePartA(articleData),
-      partBPromise,
-    ]);
+    // Paso 3: Entrevistas
+    console.log('[process] Paso 3: entrevistas');
+    const entrevistasData = await step('entrevistas', () => analyzeEntrevistas(articleData));
 
-    if (resA.status === 'rejected') console.error('[partA] falló:', resA.reason?.message);
-    if (resB.status === 'rejected') console.error('[partB] falló:', resB.reason?.message);
+    // Paso 4: Música (con enriquecimiento Last.fm)
+    console.log('[process] Paso 4: música');
+    let lastfmTracks = [];
+    let recentSongs = [];
+    try { recentSongs = getRecentMusicFromUser(req.session.userId, 5); } catch (e) {}
+    try {
+      const moodTags = await getMoodTags(articleData);
+      console.log(`[lastfm] mood tags: ${moodTags.join(', ')}`);
+      lastfmTracks = await getTopTracksByTags(moodTags);
+    } catch (e) {
+      console.error('[lastfm] enrichment error:', e.message);
+    }
+    const musicaData = await step('musica', () => analyzeMusica(articleData, lastfmTracks, recentSongs));
 
-    // ── Pausa entre tandas para liberar el contador de tokens/min ──
-    console.log('[process] Pausa 15s entre tandas...');
-    await new Promise(r => setTimeout(r, 15000));
+    // Paso 5: Ángulo + Streaming
+    console.log('[process] Paso 5: ángulo + streaming');
+    const anguloStreamingData = await step('angulo/streaming', () => analyzeAnguloStreaming(articleData));
 
-    // ── Tanda 2: fuentes externas + videos (web_search, menos tokens) ──
-    console.log('[process] Tanda 2: otrasFuentes + opinión + videos');
-    const [resOF, resOP, resVideos] = await Promise.allSettled([
-      fetchOtrasFuentes({ title: articleData.title, source: articleData.source, url }),
-      fetchOpinion({ title: articleData.title, source: articleData.source }),
-      searchVideos(videoSearchData),
-    ]);
+    // Paso 6: Videos YouTube
+    console.log('[process] Paso 6: videos');
+    const videos = await step('videos', () => searchVideos(videoSearchData));
 
-    // Extraer valores o null si fallaron
-    const partA        = resA.status      === 'fulfilled' ? resA.value      : null;
-    const partB        = resB.status      === 'fulfilled' ? resB.value      : null;
-    const otrasFuentes = resOF.status     === 'fulfilled' ? resOF.value     : null;
-    const opinion      = resOP.status     === 'fulfilled' ? resOP.value     : null;
-    const videos       = resVideos.status === 'fulfilled' ? resVideos.value : null;
+    // Paso 7: Otras fuentes
+    console.log('[process] Paso 7: otras fuentes');
+    const otrasFuentesData = await step('otrasFuentes', () =>
+      fetchOtrasFuentes({ title: articleData.title, source: articleData.source, url })
+    );
 
-    // Loguear errores de tanda 2
-    if (resOF.status     === 'rejected') console.error('[otrasFuentes] falló:', resOF.reason?.message);
-    if (resOP.status     === 'rejected') console.error('[opinion] falló:', resOP.reason?.message);
-    if (resVideos.status === 'rejected') console.error('[videos] falló:', resVideos.reason?.message);
+    // Paso 8: Opinión
+    console.log('[process] Paso 8: opinión');
+    const opinionData = await step('opinion', () =>
+      fetchOpinion({ title: articleData.title, source: articleData.source })
+    );
 
     // Agregar URLs de YouTube a cada track de música
-    if (partB?.musica && Array.isArray(partB.musica)) {
-      partB.musica = partB.musica.map(t => ({
+    let musica = musicaData?.musica || null;
+    if (musica && Array.isArray(musica)) {
+      musica = musica.map(t => ({
         ...t,
         youtube_url: buildMusicSearchUrl(t.youtube_query || `${t.artista} ${t.cancion}`),
       }));
     }
 
     const result = {
-      title:        partA?.title        || articleData.title,
-      source:       partA?.source       || articleData.source,
-      resumen:      partA?.resumen      || null,
-      boletin:      partA?.boletin      || null,
-      contexto:     partA?.contexto     || null,
-      angulo:       partA?.angulo       || null,
-      entrevistas:  partB?.entrevistas  || null,
-      musica:       partB?.musica       || null,
-      streaming:    partB?.streaming    || null,
-      videos:       videos              || { available: false },
-      otrasFuentes: otrasFuentes?.fuentes || (Array.isArray(otrasFuentes) ? otrasFuentes : null),
-      opinion:      opinion?.columnas   || (Array.isArray(opinion) ? opinion : null),
+      title:        brc?.title              || articleData.title,
+      source:       brc?.source             || articleData.source,
+      resumen:      brc?.resumen            || null,
+      boletin:      brc?.boletin            || null,
+      contexto:     brc?.contexto           || null,
+      angulo:       anguloStreamingData?.angulo    || null,
+      entrevistas:  entrevistasData?.entrevistas   || null,
+      musica,
+      streaming:    anguloStreamingData?.streaming || null,
+      videos:       videos                  || { available: false },
+      otrasFuentes: otrasFuentesData?.fuentes || (Array.isArray(otrasFuentesData) ? otrasFuentesData : null),
+      opinion:      opinionData?.columnas    || (Array.isArray(opinionData) ? opinionData : null),
     };
 
-    const analysisId = saveAnalysis(
-      req.session.userId,
-      url,
-      result.title,
-      result.source,
-      result
-    );
-
+    const analysisId = saveAnalysis(req.session.userId, url, result.title, result.source, result);
     return res.json({ success: true, id: analysisId, data: result });
 
   } catch (error) {

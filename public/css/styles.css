@@ -13,7 +13,7 @@
   --yellow: #e8c227;
   --yellow-light: #FFF9E6;
 
-  --font: 'Nunito Sans', Arial, sans-serif;
+  --font: 'Inter', system-ui, sans-serif;
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -130,7 +130,7 @@ input, textarea {
 }
 
 .login-brand-title {
-  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-family: var(--font);
   font-size: 20px;
   font-weight: 900;
   color: #ffffff;
@@ -139,22 +139,20 @@ input, textarea {
 }
 
 .login-brand-slogan {
-  font-family: 'Nunito Sans', Arial, sans-serif;
-  font-size: 9px;
+  font-family: var(--font);
+  font-size: 13px;
   font-weight: 400;
   color: #888888;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.06em;
   line-height: 1;
 }
 
 .login-brand-lema {
-  font-family: 'Nunito Sans', Arial, sans-serif;
-  font-size: 8px;
+  font-family: var(--font);
+  font-size: 13px;
   font-weight: 400;
   color: #555555;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   line-height: 1;
 }
 
@@ -322,7 +320,7 @@ input, textarea {
 }
 
 .logo-title {
-  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-family: var(--font);
   font-size: 24px;
   font-weight: 900;
   color: #ffffff;
@@ -333,7 +331,7 @@ input, textarea {
 }
 
 .logo-slogan {
-  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-family: var(--font);
   font-size: 10px;
   font-weight: 400;
   color: #888888;
@@ -344,7 +342,7 @@ input, textarea {
 }
 
 .logo-lema {
-  font-family: 'Nunito Sans', Arial, sans-serif;
+  font-family: var(--font);
   font-size: 9px;
   font-weight: 400;
   color: #555555;
@@ -550,9 +548,9 @@ input, textarea {
   border-radius: 2px;
   padding: 12px 0;
   font-family: var(--font);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
   color: #1a1a1a;
   cursor: pointer;
   white-space: nowrap;
@@ -644,9 +642,9 @@ input, textarea {
 }
 
 .section-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--gray-400);
 }
 
@@ -655,7 +653,7 @@ input, textarea {
    ============================================ */
 
 .resumen-text {
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.75;
   color: var(--black);
   max-width: 720px;
@@ -683,7 +681,7 @@ input, textarea {
 }
 
 .boletin-bajada {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.65;
   color: var(--black);
   font-family: var(--font);
@@ -727,7 +725,7 @@ input, textarea {
 }
 
 .contexto-traduccion {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.65;
   color: var(--black);
   border-left: none;
@@ -738,9 +736,9 @@ input, textarea {
    ============================================ */
 
 .entrevistas-categoria-header {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
   color: var(--gray-400);
   padding: 20px 0 10px;
   border-bottom: 1px solid var(--gray-100);
@@ -782,21 +780,21 @@ input, textarea {
 }
 
 .entrevista-nombre {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--black);
   margin-bottom: 2px;
 }
 
 .entrevista-rol {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--gray-400);
   margin-bottom: 12px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .entrevista-justificacion {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--gray-600);
   margin-bottom: 12px;
@@ -804,7 +802,7 @@ input, textarea {
 
 .entrevista-declaracion {
   font-style: italic;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--gray-600);
   padding: 10px 14px;
@@ -815,15 +813,15 @@ input, textarea {
 }
 
 .entrevista-pregunta-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   color: var(--gray-400);
   margin-bottom: 4px;
 }
 
 .entrevista-pregunta {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--black);
   font-weight: 500;
@@ -842,9 +840,9 @@ input, textarea {
 
 .musica-categoria-header {
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
   color: var(--gray-400);
   padding: 22px 0 10px;
   border-bottom: 1px solid var(--gray-100);
@@ -873,7 +871,7 @@ input, textarea {
 
 .musica-categoria-subtexto {
   display: block;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 400;
   text-transform: none;
   letter-spacing: 0;
@@ -916,20 +914,20 @@ input, textarea {
 }
 
 .musica-track {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--black);
   margin-bottom: 2px;
 }
 
 .musica-artista {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--gray-400);
   margin-bottom: 8px;
 }
 
 .musica-meta {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--gray-400);
   background: var(--gray-50);
   padding: 1px 7px;
@@ -939,7 +937,7 @@ input, textarea {
 }
 
 .musica-conexion {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--gray-600);
   line-height: 1.5;
 }
@@ -1056,7 +1054,7 @@ input, textarea {
 }
 
 .video-channel {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--gray-400);
   margin-bottom: 12px;
 }
@@ -1121,9 +1119,9 @@ input, textarea {
 
 .angulo-tipo-badge {
   display: inline-block;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.02em;
   padding: 3px 10px;
   border-radius: 99px;
   background: var(--gray-50);
@@ -1133,7 +1131,7 @@ input, textarea {
 }
 
 .angulo-titulo {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--black);
   margin-bottom: 12px;
@@ -1179,9 +1177,9 @@ input, textarea {
 }
 
 .streaming-block-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   color: var(--gray-400);
 }
 
@@ -1190,9 +1188,9 @@ input, textarea {
 }
 
 .streaming-opcion-label {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.02em;
   color: var(--gray-400);
   margin-bottom: 6px;
   margin-top: 16px;
@@ -1398,16 +1396,15 @@ input, textarea {
 
 .fuente-medio,
 .opinion-medio {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   color: var(--gray-400);
-  text-transform: uppercase;
 }
 
 .fuente-titulo,
 .opinion-titulo {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--black);
   line-height: 1.4;
@@ -1415,12 +1412,12 @@ input, textarea {
 
 .fuente-fecha,
 .opinion-fecha {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--gray-400);
 }
 
 .opinion-columnista {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--black);
 }
@@ -1434,7 +1431,7 @@ input, textarea {
 
 .fuente-arrow,
 .opinion-arrow {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--gray-400);
   margin-top: 2px;
   align-self: flex-start;
