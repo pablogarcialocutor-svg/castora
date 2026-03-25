@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Fondo amarillo -->
+  <rect width="64" height="64" fill="#e8c227"/>
+  <!-- Oreja izquierda -->
+  <rect x="8" y="2" width="16" height="20" rx="8" fill="#1a1a1a"/>
+  <!-- Oreja derecha -->
+  <rect x="40" y="2" width="16" height="20" rx="8" fill="#1a1a1a"/>
+  <!-- Cabeza -->
+  <rect x="6" y="14" width="52" height="44" rx="12" fill="#1a1a1a"/>
+  <!-- Ojo izquierdo blanco -->
+  <circle cx="23" cy="32" r="8" fill="white"/>
+  <!-- Ojo derecho blanco -->
+  <circle cx="41" cy="32" r="8" fill="white"/>
+  <!-- Pupila izquierda -->
+  <circle cx="25" cy="34" r="4" fill="#1a1a1a"/>
+  <!-- Pupila derecha -->
+  <circle cx="43" cy="34" r="4" fill="#1a1a1a"/>
+  <!-- Brillo ojo izquierdo -->
+  <circle cx="27" cy="31" r="1.5" fill="white"/>
+  <!-- Brillo ojo derecho -->
+  <circle cx="45" cy="31" r="1.5" fill="white"/>
+  <!-- Nariz -->
+  <ellipse cx="32" cy="45" rx="5" ry="4" fill="#b8870a"/>
+  <!-- Diente izquierdo -->
+  <rect x="23" y="50" width="7" height="8" rx="2" fill="white"/>
+  <!-- Diente derecho -->
+  <rect x="34" y="50" width="7" height="8" rx="2" fill="white"/>
+</svg>

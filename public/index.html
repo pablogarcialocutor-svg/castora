@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Castora — Producción periodística</title>
+  <link rel="icon" href="/logo_nuevo_II.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="logo-icon-block">
+        <img src="/images/logo_nuevo_II.png" alt="Castora" class="logo-img" />
+      </div>
+      <div class="logo-divider-vertical"></div>
+      <div class="logo-text-block">
+        <span class="logo-title">CASTORA</span>
+        <span class="logo-slogan">Producción de radio, streaming &amp; podcast</span>
+        <span class="logo-lema">Construcción de contenidos</span>
+      </div>
+    </div>
+    <div class="header-user">
+      <button class="history-toggle" id="historyToggle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        Historial
+      </button>
+      <span class="header-email" id="headerEmail"></span>
+      <button class="btn-logout" id="logoutBtn">Salir</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="app-main">
+
+    <!-- HISTORY PANEL -->
+    <div class="history-panel" id="historyPanel">
+      <div class="history-panel-header">Últimos análisis</div>
+      <div class="history-list" id="historyList">
+        <div class="history-empty">No hay análisis previos</div>
+      </div>
+    </div>
+
+    <!-- INPUT SECTION -->
+    <section class="input-section">
+      <div class="input-row">
+        <input
+          type="url"
+          id="urlInput"
+          class="url-input"
+          placeholder="Pegá la URL de la noticia..."
+          autocomplete="off"
+        />
+        <button class="btn-process" id="processBtn">Interpretar</button>
+      </div>
+    </section>
+
+    <!-- ERROR -->
+    <div class="process-error" id="processError"></div>
+
+    <!-- LOADING -->
+    <section class="loading-section" id="loadingSection">
+      <div class="loading-status" id="loadingStatus">Leyendo la noticia...</div>
+      <div class="loading-bar-track">
+        <div class="loading-bar-fill" id="loadingBar"></div>
+      </div>
+    </section>
+
+    <!-- TABS -->
+    <section class="tabs-section" id="tabsSection">
+
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="boletin">Boletín</button>
+        <button class="tab-btn" data-tab="contexto">Contexto</button>
+        <button class="tab-btn" data-tab="resumen">Resumen</button>
+        <button class="tab-btn" data-tab="entrevistas">Entrevistas</button>
+        <button class="tab-btn" data-tab="musica">Música</button>
+        <button class="tab-btn" data-tab="videos">Videos</button>
+        <button class="tab-btn" data-tab="angulo">Ángulo</button>
+        <button class="tab-btn" data-tab="streaming">Streaming</button>
+        <button class="tab-btn" data-tab="otrasfuentes">Otras fuentes</button>
+        <button class="tab-btn" data-tab="opinion">Opinión</button>
+      </nav>
+
+      <!-- TAB: BOLETÍN -->
+      <div class="tab-panel active" id="tab-boletin">
+        <div class="section-header">
+          <span class="section-label">Boletín radial</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-copy" data-copy="boletin">Copiar</button>
+            <button class="btn-export" id="exportBoletinBtn">Exportar</button>
+          </div>
+        </div>
+        <div class="boletin-titulo" id="boletinTitulo"></div>
+        <div class="boletin-bajadas" id="boletinBajadas"></div>
+      </div>
+
+      <!-- TAB: RESUMEN -->
+      <div class="tab-panel" id="tab-resumen">
+        <div class="section-header">
+          <span class="section-label">Síntesis</span>
+          <button class="btn-copy" data-copy="resumen">Copiar</button>
+        </div>
+        <p class="resumen-text" id="resumenText"></p>
+      </div>
+
+      <!-- TAB: CONTEXTO -->
+      <div class="tab-panel" id="tab-contexto">
+        <div class="section-header">
+          <span class="section-label">Datos en contexto</span>
+          <button class="btn-copy" data-copy="contexto">Copiar</button>
+        </div>
+        <div class="contexto-list" id="contextoList"></div>
+      </div>
+
+      <!-- TAB: ENTREVISTAS -->
+      <div class="tab-panel" id="tab-entrevistas">
+        <div class="section-header">
+          <span class="section-label">Posibles entrevistados</span>
+          <button class="btn-copy" data-copy="entrevistas">Copiar todo</button>
+        </div>
+        <div class="entrevistas-grid" id="entrevistasGrid"></div>
+      </div>
+
+      <!-- TAB: MÚSICA -->
+      <div class="tab-panel" id="tab-musica">
+        <div class="section-header">
+          <span class="section-label">Música sugerida</span>
+          <button class="btn-copy" data-copy="musica">Copiar</button>
+        </div>
+        <div class="musica-list" id="musicaList"></div>
+      </div>
+
+      <!-- TAB: VIDEOS -->
+      <div class="tab-panel" id="tab-videos">
+        <div class="section-header">
+          <span class="section-label">Videos relacionados</span>
+        </div>
+        <div id="videosContent"></div>
+      </div>
+
+      <!-- TAB: ÁNGULO -->
+      <div class="tab-panel" id="tab-angulo">
+        <div class="section-header">
+          <span class="section-label">Ángulos alternativos</span>
+          <button class="btn-copy" data-copy="angulo">Copiar todo</button>
+        </div>
+        <div class="angulo-list" id="anguloList"></div>
+      </div>
+
+      <!-- TAB: STREAMING -->
+      <div class="tab-panel" id="tab-streaming">
+        <div class="section-header">
+          <span class="section-label">Material para streaming</span>
+        </div>
+        <div class="streaming-sections" id="streamingSections"></div>
+      </div>
+
+      <!-- TAB: OTRAS FUENTES -->
+      <div class="tab-panel" id="tab-otrasfuentes">
+        <div class="section-header">
+          <span class="section-label">Otras fuentes</span>
+        </div>
+        <div class="fuentes-list" id="fuentesList"></div>
+      </div>
+
+      <!-- TAB: OPINIÓN -->
+      <div class="tab-panel" id="tab-opinion">
+        <div class="section-header">
+          <span class="section-label">Columnas de opinión</span>
+        </div>
+        <div class="opinion-list" id="opinionList"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

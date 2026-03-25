@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Castora — Ingresá</title>
+  <link rel="icon" href="/logo_nuevo_II.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="login-page">
+
+  <div class="login-card">
+
+    <!-- Identidad visual — igual que el header -->
+    <div class="login-brand">
+      <div class="login-logo-block">
+        <img src="/images/logo_nuevo_II.png" alt="Castora" class="login-logo-img" />
+      </div>
+      <div class="login-brand-divider"></div>
+      <div class="login-brand-text">
+        <span class="login-brand-title">CASTORA</span>
+        <span class="login-brand-slogan">Producción de radio, streaming &amp; podcast</span>
+        <span class="login-brand-lema">Construcción de contenidos</span>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="login-form-area">
+
+      <div class="login-tabs">
+        <button class="login-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="login-tab" data-tab="register">Registrarse</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email</label>
+          <input
+            type="email"
+            id="loginEmail"
+            class="form-input"
+            placeholder="tu@email.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Contraseña</label>
+          <input
+            type="password"
+            id="loginPassword"
+            class="form-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn-primary" id="loginBtn">Iniciar sesión</button>
+        <div class="error-message" id="loginError"></div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display:none;" autocomplete="on">
+        <div class="form-group">
+          <label class="form-label" for="registerEmail">Email</label>
+          <input
+            type="email"
+            id="registerEmail"
+            class="form-input"
+            placeholder="tu@email.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="registerPassword">Contraseña</label>
+          <input
+            type="password"
+            id="registerPassword"
+            class="form-input"
+            placeholder="Mínimo 6 caracteres"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn-primary" id="registerBtn">Crear cuenta</button>
+        <div class="error-message" id="registerError"></div>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>
