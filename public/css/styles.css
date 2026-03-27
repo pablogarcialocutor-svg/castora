@@ -133,12 +133,15 @@ input, textarea {
 }
 
 .login-brand-title {
-  font-family: var(--font);
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 20px;
-  font-weight: 900;
+  font-weight: 700;
   color: #ffffff;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
 }
 
 .login-brand-slogan {
@@ -323,36 +326,37 @@ input, textarea {
 }
 
 .logo-title {
-  font-family: var(--font);
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 700;
   color: #ffffff;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
 }
 
 .logo-slogan {
-  font-family: var(--font);
-  font-size: 10px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
   font-weight: 400;
   color: #888888;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 .logo-lema {
-  font-family: var(--font);
-  font-size: 9px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
   font-weight: 400;
   color: #555555;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
 .header-user {
