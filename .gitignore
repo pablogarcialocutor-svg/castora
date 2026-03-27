@@ -1,3 +1,4 @@
 node_modules/
 .env
+ (2).env
 db/castora.db
