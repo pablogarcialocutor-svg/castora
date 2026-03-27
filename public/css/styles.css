@@ -10,12 +10,12 @@
   --gray-100: #e8e8e8;
   --gray-400: #888888;
   --gray-600: #666666;
-  --yellow: #e8c227;
+  --yellow: #D4AC0D;
   --yellow-light: #FFF9E6;
 
   --font: 'Inter', system-ui, sans-serif;
 
-  --radius-sm: 4px;
+  --radius-sm: 6px;
   --radius-md: 8px;
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
@@ -39,6 +39,7 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -591,7 +592,7 @@ input, textarea {
 }
 
 .tab-btn {
-  background: #e8c227;
+  background: #D4AC0D;
   border: none;
   border-radius: 2px;
   padding: 12px 0;
@@ -612,7 +613,7 @@ input, textarea {
 
 .tab-btn.active {
   background: #1a1a1a;
-  color: #e8c227;
+  color: #D4AC0D;
 }
 
 .tab-panel {
