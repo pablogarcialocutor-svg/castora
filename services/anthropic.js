@@ -205,7 +205,21 @@ ${content.slice(0, 4000)}
 JSON:
 {"title":"","source":"","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"dato":"cifra/fecha/% exacto","traduccion":"comparación cotidiana concreta"}]}
 
-REGLAS: titulo ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjetivos valorativos. bajadas: 2-3, ≤200 car c/u, S+V+P, hechos verificables. contexto: 3-6 items con comparaciones tangibles a precios/tiempos cotidianos. Español rioplatense.`;
+REGLAS BOLETÍN:
+- titulo: ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjetivos valorativos
+- bajadas: 2-3, ≤200 car c/u, S+V+P, solo hechos verificables
+- Estructura obligatoria: título=hecho central / bajada1=contexto / bajada2=consecuencia o dato nuevo / bajada3 si existe=perspectiva o reacción
+- PROHIBIDO repetir palabras clave, nombres propios o conceptos entre título y bajadas, o entre bajadas
+- El protagonista principal se nombra solo una vez en todo el boletín — las demás referencias usan pronombre o cargo
+- PROHIBIDO repetir el mismo verbo en distintas bajadas
+
+REGLAS CONTEXTO:
+- 3-6 items, cada uno con un dato numérico distinto (cifra, %, fecha, monto)
+- La traducción es una comparación cotidiana concreta (precios, tiempos, distancias conocidas)
+- PROHIBIDO repetir ningún dato numérico entre items
+- PROHIBIDO que dos items mencionen la misma magnitud o concepto
+
+Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
