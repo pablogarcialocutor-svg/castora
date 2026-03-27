@@ -36,7 +36,7 @@
 
   // Contenedor DOM de cada sección on-demand
   const SECTION_CONTAINERS = {
-    resumen:      '#resumenText',
+    resumen:      '#resumenContent',
     entrevistas:  '#entrevistasGrid',
     musica:       '#musicaList',
     videos:       '#videosContent',
@@ -208,6 +208,8 @@
     switch (sectionKey) {
       case 'resumen':
         currentData.resumen = data;
+        // Restaurar el <p> si fue reemplazado por el loader
+        document.getElementById('resumenContent').innerHTML = '<p class="resumen-text" id="resumenText"></p>';
         renderResumen(data);
         break;
       case 'entrevistas':
@@ -255,22 +257,12 @@
     const el = document.querySelector(sel);
     if (!el) return;
 
-    if (tabName === 'resumen') {
-      // <p> — usar solo inline para evitar HTML inválido
-      const msgs = {
-        loading: '<span class="loading-status" style="display:inline;">Castora trabajando</span>',
-        error:   '<span class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</span>',
-        pending: '<span class="seccion-no-disponible">Hacé clic para cargar esta sección.</span>',
-      };
-      el.innerHTML = msgs[status] || '';
-    } else {
-      const msgs = {
-        loading: LOADING_HTML,
-        error:   '<p class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</p>',
-        pending: '<p class="seccion-no-disponible">Hacé clic para cargar esta sección.</p>',
-      };
-      el.innerHTML = msgs[status] || '';
-    }
+    const msgs = {
+      loading: LOADING_HTML,
+      error:   '<p class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</p>',
+      pending: '<p class="seccion-no-disponible">Hacé clic para cargar esta sección.</p>',
+    };
+    el.innerHTML = msgs[status] || '';
   }
 
   // Deja todas las secciones on-demand en estado pendiente

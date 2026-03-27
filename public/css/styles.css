@@ -10,7 +10,7 @@
   --gray-100: #e8e8e8;
   --gray-400: #888888;
   --gray-600: #666666;
-  --yellow: #D4B800;
+  --yellow: #FACC15;
   --yellow-light: #FFF9E6;
 
   --font: 'Inter', system-ui, -apple-system, sans-serif;
@@ -610,7 +610,7 @@ input, textarea {
 }
 
 .tab-btn:hover:not(.active) {
-  background: #bfa500;
+  background: #e0b810;
 }
 
 .tab-btn.active {
