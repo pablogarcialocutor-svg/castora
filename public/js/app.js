@@ -242,13 +242,16 @@
   }
 
   // HTML del componente de carga — mismas clases que la carga inicial
-  const LOADING_HTML = `
+  function makeLoadingHTML(msg) {
+    return `
     <div class="loading-section visible">
-      <div class="loading-status">Castora trabajando</div>
+      <div class="loading-status">${msg}</div>
       <div class="loading-bar-track">
         <div class="loading-bar-fill" style="width:65%;transition:none;"></div>
       </div>
     </div>`;
+  }
+  const LOADING_HTML = makeLoadingHTML('Castora trabajando');
 
   // Muestra estado transitorio en el contenedor de una sección
   function renderSectionStatus(tabName, status) {
@@ -257,8 +260,12 @@
     const el = document.querySelector(sel);
     if (!el) return;
 
+    const loadingMsg = tabName === 'entrevistas'
+      ? makeLoadingHTML('Esperá, esta es la más difícil...')
+      : LOADING_HTML;
+
     const msgs = {
-      loading: LOADING_HTML,
+      loading: loadingMsg,
       error:   '<p class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</p>',
       pending: '<p class="seccion-no-disponible">Hacé clic para cargar esta sección.</p>',
     };
