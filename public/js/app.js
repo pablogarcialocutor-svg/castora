@@ -239,12 +239,12 @@
     }
   }
 
-  // HTML del componente de carga unificado
+  // HTML del componente de carga — mismas clases que la carga inicial
   const LOADING_HTML = `
-    <div class="castora-loading">
-      <span class="castora-loading-text">Castora trabajando</span>
-      <div class="castora-loading-bar-track">
-        <div class="castora-loading-bar-fill"></div>
+    <div class="loading-section visible">
+      <div class="loading-status">Castora trabajando</div>
+      <div class="loading-bar-track">
+        <div class="loading-bar-fill" style="width:65%;transition:none;"></div>
       </div>
     </div>`;
 
@@ -258,7 +258,7 @@
     if (tabName === 'resumen') {
       // <p> — usar solo inline para evitar HTML inválido
       const msgs = {
-        loading: '<span class="castora-loading-text">Castora trabajando</span>',
+        loading: '<span class="loading-status" style="display:inline;">Castora trabajando</span>',
         error:   '<span class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</span>',
         pending: '<span class="seccion-no-disponible">Hacé clic para cargar esta sección.</span>',
       };
