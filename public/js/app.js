@@ -10,21 +10,45 @@
   // ==========================================
 
   let currentData = null;
+  let currentUrl = null;    // URL actualmente procesada
+  let sectionState = {};    // { sectionKey: 'idle'|'loading'|'loaded' }
   let loadingInterval = null;
   let loadingStep = 0;
   let loadingProgress = 0;
 
+  // Mensajes para la carga inicial (boletín + contexto)
   const LOADING_MESSAGES = [
     'Leyendo la nota...',
     'Construyendo el boletín...',
     'Analizando el contexto...',
-    'Buscando quién puede hablar de esto...',
-    'Eligiendo la música... esto trabaja como un castor de verdad',
-    'Buscando videos...',
-    'Rastreando otras fuentes...',
-    'Buscando columnas de opinión...',
-    'Vale la pena la espera.',
   ];
+
+  // Tabs que se cargan en la llamada inicial, sin on-demand
+  const INITIAL_TABS = new Set(['boletin', 'contexto']);
+
+  // Mapeo tab → sección del backend
+  const TAB_SECTION_MAP = {
+    resumen:      'resumen',
+    entrevistas:  'entrevistas',
+    musica:       'musica',
+    videos:       'videos',
+    angulo:       'angulo',
+    streaming:    'angulo',       // comparte sección con angulo
+    otrasfuentes: 'otrasfuentes',
+    opinion:      'opinion',
+  };
+
+  // Contenedor DOM de cada sección on-demand
+  const SECTION_CONTAINERS = {
+    resumen:      '#resumenText',
+    entrevistas:  '#entrevistasGrid',
+    musica:       '#musicaList',
+    videos:       '#videosContent',
+    angulo:       '#anguloList',
+    streaming:    '#streamingSections',
+    otrasfuentes: '#fuentesList',
+    opinion:      '#opinionList',
+  };
 
   // ==========================================
   // DOM REFERENCES
@@ -127,13 +151,128 @@
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const tabName = btn.dataset.tab;
+
+        // Actualizar estado visual activo
         tabBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         const panel = document.getElementById(`tab-${tabName}`);
         if (panel) panel.classList.add('active');
+
+        // On-demand: disparar carga si hay URL activa y la sección no se cargó
+        if (!INITIAL_TABS.has(tabName) && currentUrl) {
+          const sectionKey = TAB_SECTION_MAP[tabName];
+          if (!sectionKey) return;
+          const state = sectionState[sectionKey] || 'idle';
+          if (state === 'idle') {
+            loadSection(tabName, sectionKey);
+          }
+        }
       });
     });
+  }
+
+  // ==========================================
+  // ON-DEMAND: CARGAR SECCIÓN
+  // ==========================================
+
+  async function loadSection(tabName, sectionKey) {
+    if (!currentUrl) return;
+    if ((sectionState[sectionKey] || 'idle') !== 'idle') return;
+
+    sectionState[sectionKey] = 'loading';
+    renderSectionStatus(tabName, 'loading');
+    // angulo y streaming comparten sección — actualizar ambos
+    if (sectionKey === 'angulo') renderSectionStatus('streaming', 'loading');
+
+    try {
+      const res = await fetch(`/api/section/${sectionKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: currentUrl }),
+      });
+      const result = await res.json();
+
+      if (!res.ok) throw new Error(result.error || 'Error al generar la sección');
+
+      sectionState[sectionKey] = 'loaded';
+      applySection(sectionKey, result.data);
+
+    } catch (err) {
+      sectionState[sectionKey] = 'idle'; // permite reintento al hacer clic de nuevo
+      renderSectionStatus(tabName, 'error');
+      if (sectionKey === 'angulo') renderSectionStatus('streaming', 'error');
+      console.error(`[section/${sectionKey}]`, err.message);
+    }
+  }
+
+  // Aplica los datos de una sección a currentData y la renderiza
+  function applySection(sectionKey, data) {
+    if (!currentData) currentData = {};
+    switch (sectionKey) {
+      case 'resumen':
+        currentData.resumen = data;
+        renderResumen(data);
+        break;
+      case 'entrevistas':
+        currentData.entrevistas = data;
+        renderEntrevistas(data);
+        break;
+      case 'musica':
+        currentData.musica = data;
+        renderMusica(data);
+        break;
+      case 'videos':
+        currentData.videos = data;
+        renderVideos(data);
+        break;
+      case 'angulo':
+        currentData.angulo = data?.angulo || null;
+        currentData.streaming = data?.streaming || null;
+        renderAngulo(data?.angulo || null);
+        renderStreaming(data?.streaming || null);
+        break;
+      case 'otrasfuentes':
+        currentData.otrasFuentes = data;
+        renderOtrasFuentes(data);
+        break;
+      case 'opinion':
+        currentData.opinion = data;
+        renderOpinion(data);
+        break;
+    }
+  }
+
+  // Muestra estado transitorio en el contenedor de una sección
+  function renderSectionStatus(tabName, status) {
+    const sel = SECTION_CONTAINERS[tabName];
+    if (!sel) return;
+    const el = document.querySelector(sel);
+    if (!el) return;
+
+    if (tabName === 'resumen') {
+      const msgs = {
+        loading: 'Generando...',
+        error: 'Error al cargar. Hacé clic para reintentar.',
+        pending: 'Hacé clic para cargar esta sección.',
+      };
+      el.textContent = msgs[status] || '';
+    } else {
+      const msgs = {
+        loading: '<p class="seccion-no-disponible">Generando...</p>',
+        error: '<p class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</p>',
+        pending: '<p class="seccion-no-disponible">Hacé clic para cargar esta sección.</p>',
+      };
+      el.innerHTML = msgs[status] || '';
+    }
+  }
+
+  // Deja todas las secciones on-demand en estado pendiente
+  function resetDemandSections() {
+    sectionState = {};
+    for (const tabName of Object.keys(SECTION_CONTAINERS)) {
+      renderSectionStatus(tabName, 'pending');
+    }
   }
 
   // ==========================================
@@ -270,7 +409,11 @@
     processBtn.disabled = true;
     processBtn.textContent = 'Interpretando...';
     urlInput.disabled = true;
+
+    // Resetear estado completo
     currentData = {};
+    currentUrl = url;
+    sectionState = {};
 
     startLoadingAnimation();
 
@@ -288,7 +431,14 @@
       }
 
       currentData = { ...result.data, id: result.id };
-      renderAll(currentData);
+
+      // Renderizar solo las secciones de la carga inicial
+      renderBoletin(currentData.boletin);
+      renderContexto(currentData.contexto);
+
+      // Dejar secciones on-demand en estado pendiente
+      resetDemandSections();
+
       showTabs();
       document.querySelector('.tab-btn[data-tab="boletin"]')?.click();
       stopLoadingAnimation(true);
@@ -375,8 +525,8 @@
     loadingStatus.textContent = LOADING_MESSAGES[0];
     loadingBar.style.width = '5%';
 
-    const stepDuration = 15000;
-    const progressStep = 9;
+    const stepDuration = 7000;
+    const progressStep = 30;
 
     loadingInterval = setInterval(() => {
       loadingStep = (loadingStep + 1) % LOADING_MESSAGES.length;
@@ -941,9 +1091,28 @@
       const data = await res.json();
       if (data.data && data.data.result) {
         currentData = data.data.result;
-        urlInput.value = data.data.url || '';
-        showArticleMeta(currentData);
+        currentUrl = data.data.url || null;
+        urlInput.value = currentUrl || '';
+
+        // Marcar como loaded las secciones que ya tienen datos en el historial
+        sectionState = {};
+        if (currentData.resumen)     sectionState['resumen']      = 'loaded';
+        if (currentData.entrevistas) sectionState['entrevistas']  = 'loaded';
+        if (currentData.musica)      sectionState['musica']       = 'loaded';
+        if (currentData.videos)      sectionState['videos']       = 'loaded';
+        if (currentData.angulo || currentData.streaming) sectionState['angulo'] = 'loaded';
+        if (currentData.otrasFuentes) sectionState['otrasfuentes'] = 'loaded';
+        if (currentData.opinion)     sectionState['opinion']      = 'loaded';
+
         renderAll(currentData);
+        // Secciones faltantes quedan en 'idle' — se cargan on-demand al hacer clic
+        for (const tabName of Object.keys(SECTION_CONTAINERS)) {
+          const key = TAB_SECTION_MAP[tabName];
+          if (key && !sectionState[key]) {
+            renderSectionStatus(tabName, 'pending');
+          }
+        }
+
         showTabs();
         historyPanel.classList.remove('visible');
         document.querySelector('.tab-btn[data-tab="boletin"]')?.click();

@@ -1,11 +1,19 @@
 import { Router } from 'express';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
-import { fetchArticle, analyzeBoletinResumenContexto, analyzeEntrevistas, analyzeMusica, analyzeAnguloStreaming, fetchOtrasFuentes, fetchOpinion, getMoodTags } from '../services/anthropic.js';
+import {
+  fetchArticle, analyzeBoletinContexto, analyzeResumen,
+  analyzeEntrevistas, analyzeMusica, analyzeAnguloStreaming,
+  fetchOtrasFuentes, fetchOpinion, getMoodTags,
+} from '../services/anthropic.js';
 import { searchVideos, buildMusicSearchUrl, generateVideoSearchQueries } from '../services/youtube.js';
 import { getTopTracksByTags } from '../services/lastfm.js';
 import { saveAnalysis, getUserAnalyses, getAnalysisById, getRecentMusicFromUser } from '../db/database.js';
 
 const router = Router();
+
+// ==========================================
+// AUTH MIDDLEWARE
+// ==========================================
 
 function requireAuth(req, res, next) {
   if (!req.session.userId) {
@@ -14,119 +22,248 @@ function requireAuth(req, res, next) {
   next();
 }
 
+// ==========================================
+// URL CACHE — artículo y secciones por URL normalizada
+// Estructura: key → { articleData, videoSearchData, sections: {}, id }
+// ==========================================
+
+const urlCache = new Map();
+
+function normalizeUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.origin + u.pathname;
+  } catch { return url; }
+}
+
+// ==========================================
+// LOGGING — cada llamada a la API
+// ==========================================
+
+function logApiCall(section, url, startTime, tokensEst) {
+  const elapsed = Date.now() - startTime;
+  const ts = new Date().toISOString();
+  console.log(`[api] ${ts} | ${section} | ${url.slice(0, 60)} | ~${tokensEst}tok | ${elapsed}ms`);
+}
+
+// ==========================================
 // GET /api/check-auth
+// ==========================================
+
 router.get('/check-auth', (req, res) => {
   if (!req.session.userId) return res.status(401).json({ authenticated: false });
   return res.json({ authenticated: true });
 });
 
-// POST /api/process — respuesta JSON única al finalizar
+// ==========================================
+// POST /api/process — carga inicial: Boletín + Contexto únicamente
+// ==========================================
+
 router.post('/process', requireAuth, async (req, res) => {
   const { url } = req.body;
 
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'La URL es obligatoria' });
   }
-  try {
-    new URL(url);
-  } catch {
+  try { new URL(url); } catch {
     return res.status(400).json({ error: 'La URL no es válida' });
   }
 
-  // Helper: ejecuta un paso y devuelve null si falla, sin romper la cadena
-  async function step(name, fn) {
-    try {
-      const result = await fn();
-      console.log(`[process] ✓ ${name}`);
-      return result;
-    } catch (e) {
-      console.error(`[process] ✗ ${name}:`, e.message);
-      return null;
-    }
+  const key = normalizeUrl(url);
+  const cached = urlCache.get(key);
+
+  // Cache hit: ya se procesó esta URL, devolver sin llamar a la API
+  if (cached?.sections?.boletin !== undefined) {
+    console.log(`[process] cache hit: ${key}`);
+    return res.json({
+      success: true,
+      id: cached.id || null,
+      data: {
+        title: cached.articleData.title,
+        source: cached.articleData.source,
+        boletin: cached.sections.boletin,
+        contexto: cached.sections.contexto,
+      },
+    });
   }
 
   try {
+    const t0 = Date.now();
+
     // Paso 1: Leer el artículo
-    console.log('[process] Paso 1: fetch artículo');
+    console.log(`[process] fetch: ${key}`);
     const articleData = await fetchArticle(url);
     const videoSearchData = generateVideoSearchQueries(articleData);
 
-    // Paso 2: Boletín + Resumen + Contexto
-    console.log('[process] Paso 2: boletín + resumen + contexto');
-    const brc = await step('boletin/resumen/contexto', () => analyzeBoletinResumenContexto(articleData));
-
-    // Paso 3: Entrevistas
-    console.log('[process] Paso 3: entrevistas');
-    const entrevistasData = await step('entrevistas', () => analyzeEntrevistas(articleData));
-
-    // Paso 4: Música (con enriquecimiento Last.fm)
-    console.log('[process] Paso 4: música');
-    let lastfmTracks = [];
-    let recentSongs = [];
-    try { recentSongs = getRecentMusicFromUser(req.session.userId, 5); } catch (e) {}
+    // Paso 2: Boletín + Contexto (única llamada a Anthropic en la carga inicial)
+    console.log(`[process] boletin+contexto: ${key}`);
+    let brc = null;
     try {
-      const moodTags = await getMoodTags(articleData);
-      console.log(`[lastfm] mood tags: ${moodTags.join(', ')}`);
-      lastfmTracks = await getTopTracksByTags(moodTags);
+      brc = await analyzeBoletinContexto(articleData);
+      logApiCall('boletin+contexto', url, t0, 1800);
     } catch (e) {
-      console.error('[lastfm] enrichment error:', e.message);
+      console.error('[process] boletin+contexto error:', e.message);
     }
-    const musicaData = await step('musica', () => analyzeMusica(articleData, lastfmTracks, recentSongs));
 
-    // Paso 5: Ángulo + Streaming
-    console.log('[process] Paso 5: ángulo + streaming');
-    const anguloStreamingData = await step('angulo/streaming', () => analyzeAnguloStreaming(articleData));
-
-    // Paso 6: Videos YouTube
-    console.log('[process] Paso 6: videos');
-    const videos = await step('videos', () => searchVideos(videoSearchData));
-
-    // Paso 7: Otras fuentes
-    console.log('[process] Paso 7: otras fuentes');
-    const otrasFuentesData = await step('otrasFuentes', () =>
-      fetchOtrasFuentes({ title: articleData.title, source: articleData.source, url })
-    );
-
-    // Paso 8: Opinión
-    console.log('[process] Paso 8: opinión');
-    const opinionData = await step('opinion', () =>
-      fetchOpinion({ title: articleData.title, source: articleData.source })
-    );
-
-    // Agregar URLs de YouTube a cada track de música
-    let musica = musicaData?.musica || null;
-    if (musica && Array.isArray(musica)) {
-      musica = musica.map(t => ({
-        ...t,
-        youtube_url: buildMusicSearchUrl(t.youtube_query || `${t.artista} ${t.cancion}`),
-      }));
-    }
+    // Guardar en cache
+    const entry = {
+      articleData,
+      videoSearchData,
+      sections: {
+        boletin: brc?.boletin || null,
+        contexto: brc?.contexto || null,
+      },
+      id: null,
+    };
+    urlCache.set(key, entry);
 
     const result = {
-      title:        brc?.title              || articleData.title,
-      source:       brc?.source             || articleData.source,
-      resumen:      brc?.resumen            || null,
-      boletin:      brc?.boletin            || null,
-      contexto:     brc?.contexto           || null,
-      angulo:       anguloStreamingData?.angulo    || null,
-      entrevistas:  entrevistasData?.entrevistas   || null,
-      musica,
-      streaming:    anguloStreamingData?.streaming || null,
-      videos:       videos                  || { available: false },
-      otrasFuentes: otrasFuentesData?.fuentes || (Array.isArray(otrasFuentesData) ? otrasFuentesData : null),
-      opinion:      opinionData?.columnas    || (Array.isArray(opinionData) ? opinionData : null),
+      title: brc?.title || articleData.title,
+      source: brc?.source || articleData.source,
+      boletin: entry.sections.boletin,
+      contexto: entry.sections.contexto,
     };
 
     const analysisId = saveAnalysis(req.session.userId, url, result.title, result.source, result);
+    entry.id = analysisId;
+
     return res.json({ success: true, id: analysisId, data: result });
 
   } catch (error) {
-    console.error('Process error:', error);
+    console.error('[process] error:', error);
     return res.status(500).json({ error: error.message || 'Error al procesar la noticia. Intentá de nuevo.' });
   }
 });
 
-// POST /api/export/boletin — genera .docx del boletín
+// ==========================================
+// POST /api/section/:name — generación bajo demanda
+// Body: { url }
+// Secciones: resumen, entrevistas, musica, videos, angulo, otrasfuentes, opinion
+// ==========================================
+
+const VALID_SECTIONS = ['resumen', 'entrevistas', 'musica', 'videos', 'angulo', 'otrasfuentes', 'opinion'];
+
+router.post('/section/:name', requireAuth, async (req, res) => {
+  const { name } = req.params;
+  const { url } = req.body;
+
+  if (!VALID_SECTIONS.includes(name)) {
+    return res.status(400).json({ error: 'Sección inválida' });
+  }
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'URL requerida' });
+  }
+
+  const key = normalizeUrl(url);
+  let entry = urlCache.get(key);
+
+  // Cache hit: sección ya generada
+  if (entry?.sections?.[name] !== undefined) {
+    console.log(`[section/${name}] cache hit: ${key}`);
+    return res.json({ success: true, cached: true, data: entry.sections[name] });
+  }
+
+  // Sin articleData en cache: re-fetchear el artículo
+  if (!entry?.articleData) {
+    try {
+      console.log(`[section/${name}] re-fetch artículo: ${key}`);
+      const articleData = await fetchArticle(url);
+      const videoSearchData = generateVideoSearchQueries(articleData);
+      entry = { articleData, videoSearchData, sections: {}, id: null };
+      urlCache.set(key, entry);
+    } catch (e) {
+      return res.status(500).json({ error: 'No se pudo obtener el artículo: ' + e.message });
+    }
+  }
+
+  const { articleData, videoSearchData } = entry;
+  const t0 = Date.now();
+
+  try {
+    let sectionData = null;
+
+    switch (name) {
+      case 'resumen': {
+        const result = await analyzeResumen(articleData);
+        sectionData = result?.resumen || null;
+        logApiCall('resumen', url, t0, 600);
+        break;
+      }
+
+      case 'entrevistas': {
+        const result = await analyzeEntrevistas(articleData);
+        sectionData = result?.entrevistas || null;
+        logApiCall('entrevistas', url, t0, 2500);
+        break;
+      }
+
+      case 'musica': {
+        let lastfmTracks = [], recentSongs = [];
+        try { recentSongs = getRecentMusicFromUser(req.session.userId, 5); } catch {}
+        try {
+          const moodTags = await getMoodTags(articleData);
+          console.log(`[lastfm] mood tags: ${moodTags.join(', ')}`);
+          lastfmTracks = await getTopTracksByTags(moodTags);
+        } catch (e) { console.error('[lastfm]', e.message); }
+        const result = await analyzeMusica(articleData, lastfmTracks, recentSongs);
+        let musica = result?.musica || null;
+        if (musica) {
+          musica = musica.map(t => ({
+            ...t,
+            youtube_url: buildMusicSearchUrl(t.youtube_query || `${t.artista} ${t.cancion}`),
+          }));
+        }
+        sectionData = musica;
+        logApiCall('musica', url, t0, 3000);
+        break;
+      }
+
+      case 'videos': {
+        sectionData = await searchVideos(videoSearchData);
+        logApiCall('videos', url, t0, 0);
+        break;
+      }
+
+      case 'angulo': {
+        // Genera ángulo + streaming en una sola llamada
+        const result = await analyzeAnguloStreaming(articleData);
+        sectionData = {
+          angulo: result?.angulo || null,
+          streaming: result?.streaming || null,
+        };
+        logApiCall('angulo+streaming', url, t0, 2000);
+        break;
+      }
+
+      case 'otrasfuentes': {
+        const result = await fetchOtrasFuentes({ title: articleData.title, source: articleData.source, url });
+        sectionData = result?.fuentes || (Array.isArray(result) ? result : null);
+        logApiCall('otrasFuentes', url, t0, 1200);
+        break;
+      }
+
+      case 'opinion': {
+        const result = await fetchOpinion({ title: articleData.title, source: articleData.source });
+        sectionData = result?.columnas || (Array.isArray(result) ? result : null);
+        logApiCall('opinion', url, t0, 1200);
+        break;
+      }
+    }
+
+    entry.sections[name] = sectionData;
+    urlCache.set(key, entry);
+    return res.json({ success: true, cached: false, data: sectionData });
+
+  } catch (error) {
+    console.error(`[section/${name}] error:`, error.message);
+    return res.status(500).json({ error: error.message || 'Error al generar la sección' });
+  }
+});
+
+// ==========================================
+// POST /api/export/boletin — genera .docx
+// ==========================================
+
 router.post('/export/boletin', requireAuth, async (req, res) => {
   const { titulo, bajadas, articleTitle } = req.body;
   if (!titulo) return res.status(400).json({ error: 'Sin contenido para exportar' });
@@ -153,7 +290,10 @@ router.post('/export/boletin', requireAuth, async (req, res) => {
   res.send(buffer);
 });
 
+// ==========================================
 // GET /api/history
+// ==========================================
+
 router.get('/history', requireAuth, (req, res) => {
   try {
     const analyses = getUserAnalyses(req.session.userId);
@@ -164,17 +304,18 @@ router.get('/history', requireAuth, (req, res) => {
   }
 });
 
+// ==========================================
 // GET /api/history/:id
+// ==========================================
+
 router.get('/history/:id', requireAuth, (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      return res.status(400).json({ error: 'ID inválido' });
-    }
+    if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
+
     const analysis = getAnalysisById(id, req.session.userId);
-    if (!analysis) {
-      return res.status(404).json({ error: 'Análisis no encontrado' });
-    }
+    if (!analysis) return res.status(404).json({ error: 'Análisis no encontrado' });
+
     return res.json({ success: true, data: analysis });
   } catch (error) {
     console.error('History item error:', error);

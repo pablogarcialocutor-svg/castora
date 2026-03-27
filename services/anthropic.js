@@ -193,23 +193,23 @@ export async function fetchArticle(url) {
 }
 
 // ==========================================
-// PASO 2 — Boletín, Resumen, Contexto
+// PASO 2 — Boletín + Contexto (carga inicial)
 // ==========================================
 
-export async function analyzeBoletinResumenContexto({ content, title: articleTitle, source: articleSource }) {
+export async function analyzeBoletinContexto({ content, title: articleTitle, source: articleSource }) {
   const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON válido, sin markdown.
 
 NOTICIA:
 ${content.slice(0, 4000)}
 
 JSON:
-{"title":"","source":"","resumen":"4-6 líneas: subtexto e implicancias reales, no descripción mecánica","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"dato":"cifra/fecha/% exacto","traduccion":"comparación cotidiana concreta"}]}
+{"title":"","source":"","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"dato":"cifra/fecha/% exacto","traduccion":"comparación cotidiana concreta"}]}
 
 REGLAS: titulo ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjetivos valorativos. bajadas: 2-3, ≤200 car c/u, S+V+P, hechos verificables. contexto: 3-6 items con comparaciones tangibles a precios/tiempos cotidianos. Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2000,
+    max_tokens: 1800,
     messages: [{ role: 'user', content: prompt }],
   }));
 
@@ -222,6 +222,34 @@ REGLAS: titulo ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjet
   if (!parsed.title && articleTitle) parsed.title = articleTitle;
   if (!parsed.source && articleSource) parsed.source = articleSource;
   return parsed;
+}
+
+// ==========================================
+// SECCIÓN BAJO DEMANDA — Resumen editorial
+// ==========================================
+
+export async function analyzeResumen({ content }) {
+  const prompt = `Producción periodística. Devolvé SOLO JSON puro, sin markdown.
+
+NOTICIA:
+${content.slice(0, 4000)}
+
+{"resumen":"texto aquí"}
+
+REGLAS: 4-6 líneas. Subtexto e implicancias reales, no descripción mecánica de los hechos. Qué hay detrás, qué significa, qué puede pasar. Español rioplatense.`;
+
+  const response = await callWithRetry(() => client.messages.create({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 600,
+    messages: [{ role: 'user', content: prompt }],
+  }));
+
+  let rawText = '';
+  for (const block of response.content) {
+    if (block.type === 'text') rawText += block.text;
+  }
+
+  return parseJsonResponse(rawText);
 }
 
 // ==========================================
