@@ -467,8 +467,10 @@ input, textarea {
 }
 
 /* ============================================
-   LOADING BAR
+   LOADING — componente unificado
    ============================================ */
+
+/* --- Carga inicial (overlay sobre el input) --- */
 
 .loading-section {
   display: none;
@@ -486,6 +488,11 @@ input, textarea {
   font-weight: 500;
 }
 
+.loading-status::after {
+  content: '';
+  animation: castora-dots 1.4s infinite;
+}
+
 .loading-bar-track {
   height: 3px;
   background: var(--gray-100);
@@ -495,7 +502,7 @@ input, textarea {
 
 .loading-bar-fill {
   height: 100%;
-  background: var(--black);
+  background: var(--yellow);
   border-radius: 99px;
   width: 0%;
   transition: width 0.8s ease;
@@ -505,22 +512,63 @@ input, textarea {
 .loading-bar-fill::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.4) 50%,
-    transparent 100%
-  );
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
   animation: shimmer 1.5s infinite;
 }
+
+/* --- Carga bajo demanda (dentro de cada solapa) --- */
+
+.castora-loading {
+  padding: 40px 32px;
+}
+
+.castora-loading-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-600);
+  margin-bottom: 10px;
+  display: block;
+}
+
+.castora-loading-text::after {
+  content: '';
+  animation: castora-dots 1.4s infinite;
+}
+
+.castora-loading-bar-track {
+  height: 3px;
+  background: var(--gray-100);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.castora-loading-bar-fill {
+  height: 100%;
+  background: var(--yellow);
+  border-radius: 99px;
+  transform-origin: left;
+  animation: castora-indeterminate 1.6s ease-in-out infinite;
+}
+
+/* --- Animaciones --- */
 
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
+}
+
+@keyframes castora-dots {
+  0%,  15% { content: '';    }
+  16%, 40% { content: '.';   }
+  41%, 65% { content: '..';  }
+  66%,100% { content: '...'; }
+}
+
+@keyframes castora-indeterminate {
+  0%   { transform: translateX(-100%) scaleX(0.4); }
+  50%  { transform: translateX(60%)   scaleX(0.6); }
+  100% { transform: translateX(200%)  scaleX(0.4); }
 }
 
 /* ============================================

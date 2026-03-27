@@ -16,12 +16,8 @@
   let loadingStep = 0;
   let loadingProgress = 0;
 
-  // Mensajes para la carga inicial (boletín + contexto)
-  const LOADING_MESSAGES = [
-    'Leyendo la nota...',
-    'Construyendo el boletín...',
-    'Analizando el contexto...',
-  ];
+  // Texto unificado para todos los estados de carga
+  const LOADING_MESSAGES = ['Castora trabajando'];
 
   // Tabs que se cargan en la llamada inicial, sin on-demand
   const INITIAL_TABS = new Set(['boletin', 'contexto']);
@@ -243,6 +239,15 @@
     }
   }
 
+  // HTML del componente de carga unificado
+  const LOADING_HTML = `
+    <div class="castora-loading">
+      <span class="castora-loading-text">Castora trabajando</span>
+      <div class="castora-loading-bar-track">
+        <div class="castora-loading-bar-fill"></div>
+      </div>
+    </div>`;
+
   // Muestra estado transitorio en el contenedor de una sección
   function renderSectionStatus(tabName, status) {
     const sel = SECTION_CONTAINERS[tabName];
@@ -251,16 +256,17 @@
     if (!el) return;
 
     if (tabName === 'resumen') {
+      // <p> — usar solo inline para evitar HTML inválido
       const msgs = {
-        loading: 'Generando...',
-        error: 'Error al cargar. Hacé clic para reintentar.',
-        pending: 'Hacé clic para cargar esta sección.',
+        loading: '<span class="castora-loading-text">Castora trabajando</span>',
+        error:   '<span class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</span>',
+        pending: '<span class="seccion-no-disponible">Hacé clic para cargar esta sección.</span>',
       };
-      el.textContent = msgs[status] || '';
+      el.innerHTML = msgs[status] || '';
     } else {
       const msgs = {
-        loading: '<p class="seccion-no-disponible">Generando...</p>',
-        error: '<p class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</p>',
+        loading: LOADING_HTML,
+        error:   '<p class="seccion-no-disponible">Error al cargar. Hacé clic para reintentar.</p>',
         pending: '<p class="seccion-no-disponible">Hacé clic para cargar esta sección.</p>',
       };
       el.innerHTML = msgs[status] || '';
