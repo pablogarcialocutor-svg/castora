@@ -276,13 +276,13 @@ export async function analyzeEntrevistas({ content }) {
 NOTICIA:
 ${content.slice(0, 3500)}
 
-{"entrevistas":[{"nombre":"","rol":"","categoria":"experto","justificacion":"perspectiva única que aporta","declaracion":"declaración real con fecha","pregunta":"pregunta específica no obvia"}]}
+{"entrevistas":[{"nombre":"","rol":"","categoria":"experto","justificacion":"una oración","pregunta":"pregunta específica no obvia"}]}
 
-REGLAS: 10 personas — 3-4 "experto" (académicos/especialistas), 3 "critico" (voces alternativas), 3 "afectado" (impactados directamente). NUNCA protagonistas obvios del hecho. Español rioplatense.`;
+REGLAS: 6 personas — 2 "experto" (académicos/especialistas), 2 "critico" (voces alternativas), 2 "afectado" (impactados directamente). NUNCA protagonistas obvios del hecho. Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2500,
+    max_tokens: 2000,
     messages: [{ role: 'user', content: prompt }],
   }));
 
