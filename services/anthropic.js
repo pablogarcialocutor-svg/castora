@@ -257,20 +257,31 @@ export async function analyzeDisparadores({ content }) {
 NOTICIA:
 ${content.slice(0, 4000)}
 
-{"disparadores":[{"dato":"dato numérico original de la noticia","comparacion":"comparación concreta y cotidiana"}]}
+{"disparadores":[{"dato":"dato o elemento de la noticia","comparacion":"comparación concreta, cotidiana y sorprendente"}]}
+
+TAREA: Analizá la noticia en profundidad y extraé todos los elementos que un conductor de radio puede usar como gancho, dato sorprendente o punto de entrada. No solo números — también fechas históricas, comparaciones geográficas, récords, paradojas, contradicciones, personajes secundarios relevantes, consecuencias no obvias.
 
 REGLAS:
-- Extraer todos los datos numéricos, porcentajes, cifras, fechas y estadísticas relevantes que aparezcan en la noticia
-- Para cada uno generar una comparación concreta y cotidiana que lo haga comprensible para cualquier oyente
-- Formato: dato original → comparación en lenguaje cotidiano. Ejemplo: "Suba del 3% mensual → algo que costaba $1000 en enero cuesta $1430 en diciembre"
-- Solo incluir datos que realmente estén en la noticia. No inventar cifras ni contextos
-- Si no hay datos numéricos relevantes, devolver array vacío
-- Máximo 5 disparadores
-- Español rioplatense.`;
+- El dato debe ser real y estar en la noticia o ser verificable
+- La comparación debe ser concreta, cotidiana y sorprendente — nunca obvia ni banal
+- PROHIBIDO comparaciones con "el fin de semana", "el recreo", o cualquier referencia trivial
+- Las comparaciones con dinero deben usar referencias concretas: salario mínimo, canasta básica, costo de una vivienda, presupuesto educativo — no solo "pesos al cambio"
+
+TIPOS DE DISPARADORES A BUSCAR:
+1. Cifras económicas — con comparación en términos de salarios, presupuestos públicos, deuda nacional, PBI
+2. Tiempo — años, décadas, con referencia a qué pasaba en ese momento históricamente
+3. Escala geográfica — si hay una cifra, compararla con el PBI o presupuesto de un país o provincia
+4. Paradojas — algo contradictorio o irónico que surge de los datos
+5. Récords o primeras veces — si algo es histórico, explicar por qué
+6. Consecuencias no obvias — qué implica este dato para algo aparentemente no relacionado
+
+Mínimo 6 disparadores, máximo 8. Solo incluir los que sean realmente relevantes y sorprendentes. Si un disparador no es genuinamente interesante, no incluirlo.
+
+Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 800,
+    max_tokens: 1400,
     messages: [{ role: 'user', content: prompt }],
   }));
 
