@@ -257,15 +257,24 @@ export async function analyzeDisparadores({ content }) {
 NOTICIA:
 ${content.slice(0, 4000)}
 
-{"disparadores":[{"dato":"dato o elemento de la noticia","comparacion":"comparación concreta, cotidiana y sorprendente"}]}
+{"disparadores":[{"dato":"dato o elemento de la noticia","comparacion":"vuelta de rosca en una oración"}]}
 
 TAREA: Analizá la noticia en profundidad y extraé todos los elementos que un conductor de radio puede usar como gancho, dato sorprendente o punto de entrada. No solo números — también fechas históricas, comparaciones geográficas, récords, paradojas, contradicciones, personajes secundarios relevantes, consecuencias no obvias.
 
-REGLAS:
-- El dato debe ser real y estar en la noticia o ser verificable
-- La comparación debe ser concreta, cotidiana y sorprendente — nunca obvia ni banal
-- PROHIBIDO comparaciones con "el fin de semana", "el recreo", o cualquier referencia trivial
-- Las comparaciones con dinero deben usar referencias concretas: salario mínimo, canasta básica, costo de una vivienda, presupuesto educativo — no solo "pesos al cambio"
+REGLAS DE FORMATO:
+- El campo "dato" es una oración corta con el elemento de la noticia
+- El campo "comparacion" es una sola oración con la vuelta de rosca — máximo 2 líneas en total entre dato y comparacion
+- PROHIBIDO párrafos largos o explicaciones extendidas
+
+CRITERIO DE CALIDAD:
+- Priorizar disparadores con paradoja, contradicción o ironía política o histórica — esos son los más valiosos para radio
+- Las analogías con la vida cotidiana banal están PROHIBIDAS salvo que sean muy precisas y sorprendentes
+- PROHIBIDO: referencias a fútbol genérico, electrodomésticos, "el vecino", "el fin de semana", "el recreo"
+- Las comparaciones con dinero deben usar referencias concretas: salario mínimo, canasta básica, costo de una vivienda, presupuesto educativo — nunca solo "pesos al cambio"
+
+ROLES POLÍTICOS:
+- Antes de afirmar el cargo actual de cualquier político, usá web_search para confirmarlo
+- No asumir cargos basándose en información histórica — los cargos cambian
 
 TIPOS DE DISPARADORES A BUSCAR:
 1. Cifras económicas — con comparación en términos de salarios, presupuestos públicos, deuda nacional, PBI
@@ -275,13 +284,14 @@ TIPOS DE DISPARADORES A BUSCAR:
 5. Récords o primeras veces — si algo es histórico, explicar por qué
 6. Consecuencias no obvias — qué implica este dato para algo aparentemente no relacionado
 
-Mínimo 6 disparadores, máximo 8. Solo incluir los que sean realmente relevantes y sorprendentes. Si un disparador no es genuinamente interesante, no incluirlo.
+Mínimo 6 disparadores, máximo 8. Solo incluir los que sean realmente relevantes y sorprendentes.
 
 Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1400,
+    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
     messages: [{ role: 'user', content: prompt }],
   }));
 
