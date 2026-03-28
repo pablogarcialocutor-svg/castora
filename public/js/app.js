@@ -354,7 +354,7 @@
 
       case 'musica': {
         if (!currentData.musica) return '';
-        const catLabels = { sutil: 'Lo sutil', nacional: 'Nacional', internacional: 'Internacional', clasica: 'Clásica / Instrumental', esperada: 'Lo esperado' };
+        const catLabels = { sutil: 'Lo sutil', nacional: 'Nacional', internacional: 'Internacional', clasica: 'Instrumental', esperada: 'Lo esperado' };
         return currentData.musica.map((m, i) => {
           const meta = [m.anio, m.genero].filter(Boolean).join(', ');
           const cat = m.categoria ? `[${catLabels[m.categoria] || m.categoria}] ` : '';
@@ -753,7 +753,7 @@
       { key: 'sutil',          label: 'Lo sutil' },
       { key: 'nacional',       label: 'Nacional' },
       { key: 'internacional',  label: 'Internacional' },
-      { key: 'clasica',        label: 'Clásica / Instrumental' },
+      { key: 'clasica',        label: 'Instrumental' },
       { key: 'esperada',       label: 'Lo esperado' },
     ];
 
