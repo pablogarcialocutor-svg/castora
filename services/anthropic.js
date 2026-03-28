@@ -203,21 +203,30 @@ NOTICIA:
 ${content.slice(0, 4000)}
 
 JSON:
-{"title":"","source":"","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"dato":"cifra/fecha/% exacto","traduccion":"comparación cotidiana concreta"}]}
+{"title":"","source":"","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"titulo":"NOMBRE DEL BLOQUE","contenido":"texto del bloque"}]}
 
 REGLAS BOLETÍN:
-- titulo: ≤15 palabras, EL/LA/LOS+sujeto+verbo pasado/presente, sin adjetivos valorativos
-- bajadas: 2-3, ≤200 car c/u, S+V+P, solo hechos verificables
-- Estructura obligatoria: título=hecho central / bajada1=contexto / bajada2=consecuencia o dato nuevo / bajada3 si existe=perspectiva o reacción
-- PROHIBIDO repetir palabras clave, nombres propios o conceptos entre título y bajadas, o entre bajadas
-- El protagonista principal se nombra solo una vez en todo el boletín — las demás referencias usan pronombre o cargo
-- PROHIBIDO repetir el mismo verbo en distintas bajadas
+- Registro formal, nunca coloquial
+- Siempre sujeto + verbo + predicado. Sin fragmentos ni telegrafismo
+- PROHIBIDO usar dos puntos, comillas o puntos suspensivos
+- El título es siempre una afirmación, nunca una pregunta
+- El título tiene máximo una línea y media, máximo 15 palabras
+- Las bajadas van de lo más importante a lo menos importante
+- 2 bajadas si la noticia es simple, 3 solo si la información lo justifica
+- PROHIBIDO repetir palabras clave, nombres propios o verbos entre título y bajadas
+- Usar sinónimos y variaciones para evitar repeticiones
+- Cada bajada aporta información nueva, no repite lo del título con otras palabras
+- PROHIBIDO empezar una bajada con el mismo sujeto que el título
+- Todo en mayúsculas con tildes correctas
 
 REGLAS CONTEXTO:
-- 3-6 items, cada uno con un dato numérico distinto (cifra, %, fecha, monto)
-- La traducción es una comparación cotidiana concreta (precios, tiempos, distancias conocidas)
-- PROHIBIDO repetir ningún dato numérico entre items
-- PROHIBIDO que dos items mencionen la misma magnitud o concepto
+- Generar entre 2 y 4 bloques según lo que la noticia realmente justifique. Si no hay datos relevantes, no forzar.
+- BLOQUE "DATOS EN PERSPECTIVA": solo si la noticia tiene números o cifras relevantes. Traducirlos a comparaciones concretas y naturales con otras realidades. PROHIBIDO comparaciones forzadas o poco creíbles.
+- BLOQUE "ANTECEDENTES HISTÓRICOS": solo si existe un precedente real y relevante. Explicarlo en 3-4 oraciones. Si no hay precedente claro, omitir este bloque.
+- BLOQUE "ACTORES Y PODER": quiénes son los protagonistas reales, qué intereses tienen, qué poder tienen para cambiar el resultado. Sin jerga política.
+- NO incluir bloques llamados "Lo que no dice la noticia" ni "Impacto real en la gente común"
+- Si un bloque no aplica a la noticia, no aparece. Nada forzado.
+- Tono riguroso pero accesible. Como un buen columnista de radio.
 
 Español rioplatense.`;
 

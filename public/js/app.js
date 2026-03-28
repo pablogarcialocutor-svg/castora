@@ -334,7 +334,7 @@
       case 'contexto': {
         if (!currentData.contexto) return '';
         return currentData.contexto.map(c =>
-          `${c.dato}\n→ ${c.traduccion}`
+          `${c.titulo}\n${c.contenido}`
         ).join('\n\n');
       }
 
@@ -640,9 +640,8 @@
       const el = document.createElement('div');
       el.className = 'contexto-item';
       el.innerHTML = `
-        <div class="contexto-dato">${escapeHtml(upperES(item.dato || ''))}</div>
-        <span class="contexto-flecha">↓</span>
-        <div class="contexto-traduccion">${escapeHtml(item.traduccion || '')}</div>
+        <div class="contexto-dato">${escapeHtml(upperES(item.titulo || ''))}</div>
+        <div class="contexto-traduccion">${escapeHtml(item.contenido || '')}</div>
       `;
       list.appendChild(el);
     });
