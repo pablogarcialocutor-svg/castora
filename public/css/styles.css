@@ -855,17 +855,6 @@ input, textarea {
   margin-bottom: 12px;
 }
 
-.entrevista-declaracion {
-  font-style: italic;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--gray-600);
-  padding: 10px 14px;
-  border-left: 3px solid var(--yellow);
-  background: var(--yellow-light);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin-bottom: 12px;
-}
 
 .entrevista-pregunta-label {
   font-size: 13px;
@@ -1672,11 +1661,6 @@ input, textarea {
 
   .entrevista-nombre {
     font-size: 15px;
-  }
-
-  .entrevista-declaracion {
-    padding: 8px 12px;
-    font-size: 13px;
   }
 
   /* --- MÚSICA --- */

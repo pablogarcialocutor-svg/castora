@@ -729,7 +729,6 @@
       <div class="entrevista-nombre">${escapeHtml(e.nombre || '')}</div>
       <div class="entrevista-rol">${escapeHtml(e.rol || '')}</div>
       <div class="entrevista-justificacion">${escapeHtml(e.justificacion || '')}</div>
-      <div class="entrevista-declaracion">${escapeHtml(e.declaracion || '')}</div>
       <div class="entrevista-pregunta-label">${upperES('Pregunta clave')}</div>
       <div class="entrevista-pregunta">${escapeHtml(e.pregunta || '')}</div>
     `;
