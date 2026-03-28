@@ -13,7 +13,7 @@
   --yellow: #FACC15;
   --yellow-light: #FFF9E6;
 
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --font: 'Inter', system-ui, sans-serif;
 
   --radius-sm: 10px;
   --radius-md: 12px;
@@ -632,8 +632,8 @@ input, textarea {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ============================================
