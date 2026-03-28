@@ -1542,6 +1542,14 @@ input, textarea {
     letter-spacing: 0.15em;
   }
 
+  .logo-divider-vertical {
+    display: none;
+  }
+
+  .logo-text-block {
+    display: none;
+  }
+
   .logo-slogan,
   .logo-lema {
     display: none;
