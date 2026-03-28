@@ -1507,53 +1507,308 @@ input, textarea {
    ============================================ */
 
 @media (max-width: 768px) {
+
+  /* --- HEADER --- */
   .app-header {
-    padding: 0 16px 0 0;
-    height: 72px;
+    padding: 0 12px 0 0;
+    height: 56px;
   }
 
-  .header-logo,
+  .header-logo {
+    height: 56px;
+  }
+
   .logo-icon-block {
-    height: 72px;
-    width: 72px;
+    height: 56px;
+    width: 56px;
   }
 
+  .logo-img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .logo-divider-vertical {
+    height: 28px;
+  }
+
+  .logo-text-block {
+    padding: 0 12px;
+    gap: 2px;
+  }
+
+  .logo-title {
+    font-size: 16px;
+    letter-spacing: 0.15em;
+  }
+
+  .logo-slogan,
+  .logo-lema {
+    display: none;
+  }
+
+  .header-user {
+    gap: 8px;
+  }
+
+  .header-email {
+    display: none;
+  }
+
+  .history-toggle {
+    padding: 5px 10px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .history-toggle svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .btn-logout {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  /* --- MAIN CONTENT --- */
   .app-main {
-    padding: 32px 20px;
+    padding: 20px 14px;
   }
 
-  .entrevistas-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .videos-grid {
-    grid-template-columns: 1fr;
+  /* --- INPUT --- */
+  .input-section {
+    margin-bottom: 24px;
   }
 
   .input-row {
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .url-input {
+    font-size: 14px;
+    padding: 12px 14px;
   }
 
   .btn-process {
     width: 100%;
+    padding: 12px 20px;
   }
 
+  /* --- TABS NAV: scroll horizontal --- */
   .tabs-nav {
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    margin-bottom: 24px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .tabs-nav::-webkit-scrollbar {
+    display: none;
   }
 
   .tab-btn {
-    padding: 11px 0;
-    font-size: 10px;
+    flex-shrink: 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    border-radius: 8px;
   }
 
+  /* --- SECTION HEADERS --- */
+  .section-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* --- BOLETÍN --- */
+  .boletin-titulo {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .boletin-bajadas {
+    gap: 10px;
+  }
+
+  .boletin-bajada {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* --- CONTEXTO --- */
+  .contexto-list {
+    gap: 10px;
+  }
+
+  .contexto-item {
+    padding: 14px 16px;
+  }
+
+  /* --- ENTREVISTAS --- */
+  .entrevistas-subgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .entrevistas-subgrid.impar .entrevista-card:last-child {
+    grid-column: span 1;
+  }
+
+  .entrevista-card {
+    padding: 16px;
+  }
+
+  .entrevista-nombre {
+    font-size: 15px;
+  }
+
+  .entrevista-declaracion {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  /* --- MÚSICA --- */
   .musica-item {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    padding: 14px 16px;
   }
 
-  .btn-youtube {
+  .musica-links {
     align-self: flex-start;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .musica-track {
+    font-size: 15px;
+  }
+
+  /* --- VIDEOS --- */
+  .videos-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* --- ÁNGULO --- */
+  .angulo-list {
+    gap: 20px;
+  }
+
+  .angulo-item {
+    padding: 18px;
+  }
+
+  .angulo-titulo {
+    font-size: 16px;
+  }
+
+  /* --- STREAMING --- */
+  .streaming-sections {
+    gap: 16px;
+  }
+
+  .streaming-block-header {
+    padding: 12px 16px;
+  }
+
+  .streaming-block-body {
+    padding: 14px 16px;
+  }
+
+  .streaming-gancho {
+    font-size: 16px;
+  }
+
+  .hashtags-container {
+    gap: 6px;
+  }
+
+  .hashtag-tag {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+
+  /* --- FUENTES / OPINIÓN --- */
+  .fuente-card,
+  .opinion-card {
+    padding: 14px 16px;
+  }
+
+  .fuente-titulo,
+  .opinion-titulo {
+    font-size: 15px;
+  }
+
+  /* --- HISTORIAL --- */
+  .history-panel {
+    margin-bottom: 20px;
+  }
+
+  .history-item {
+    padding: 10px 14px;
+  }
+
+  .history-item-title {
+    max-width: calc(100vw - 100px);
+    font-size: 13px;
+  }
+
+  /* --- LOADING --- */
+  .loading-section {
+    margin-bottom: 24px;
+  }
+
+  .castora-loading {
+    padding: 24px 16px;
+  }
+}
+
+/* --- LOGIN MOBILE --- */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 10vh;
+  }
+
+  .login-brand {
+    height: 60px;
+  }
+
+  .login-logo-block {
+    width: 60px;
+    height: 60px;
+  }
+
+  .login-logo-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .login-brand-text {
+    padding: 0 14px;
+    gap: 2px;
+  }
+
+  .login-brand-title {
+    font-size: 16px;
+  }
+
+  .login-brand-slogan {
+    font-size: 11px;
+  }
+
+  .login-brand-lema {
+    font-size: 11px;
+  }
+
+  .login-form-area {
+    padding: 24px 20px 28px;
   }
 }
 
