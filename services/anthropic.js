@@ -248,22 +248,29 @@ Español rioplatense.`;
 }
 
 // ==========================================
-// SECCIÓN BAJO DEMANDA — Resumen editorial
+// SECCIÓN BAJO DEMANDA — Disparadores numéricos
 // ==========================================
 
-export async function analyzeResumen({ content }) {
-  const prompt = `Producción periodística. Devolvé SOLO JSON puro, sin markdown.
+export async function analyzeDisparadores({ content }) {
+  const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON puro, sin markdown.
 
 NOTICIA:
 ${content.slice(0, 4000)}
 
-{"resumen":"texto aquí"}
+{"disparadores":[{"dato":"dato numérico original de la noticia","comparacion":"comparación concreta y cotidiana"}]}
 
-REGLAS: 4-6 líneas. Subtexto e implicancias reales, no descripción mecánica de los hechos. Qué hay detrás, qué significa, qué puede pasar. Español rioplatense.`;
+REGLAS:
+- Extraer todos los datos numéricos, porcentajes, cifras, fechas y estadísticas relevantes que aparezcan en la noticia
+- Para cada uno generar una comparación concreta y cotidiana que lo haga comprensible para cualquier oyente
+- Formato: dato original → comparación en lenguaje cotidiano. Ejemplo: "Suba del 3% mensual → algo que costaba $1000 en enero cuesta $1430 en diciembre"
+- Solo incluir datos que realmente estén en la noticia. No inventar cifras ni contextos
+- Si no hay datos numéricos relevantes, devolver array vacío
+- Máximo 5 disparadores
+- Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 600,
+    max_tokens: 800,
     messages: [{ role: 'user', content: prompt }],
   }));
 

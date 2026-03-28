@@ -24,7 +24,7 @@
 
   // Mapeo tab → sección del backend
   const TAB_SECTION_MAP = {
-    resumen:      'resumen',
+    disparadores: 'disparadores',
     entrevistas:  'entrevistas',
     musica:       'musica',
     videos:       'videos',
@@ -36,7 +36,7 @@
 
   // Contenedor DOM de cada sección on-demand
   const SECTION_CONTAINERS = {
-    resumen:      '#resumenContent',
+    disparadores: '#disparadoresList',
     entrevistas:  '#entrevistasGrid',
     musica:       '#musicaList',
     videos:       '#videosContent',
@@ -206,11 +206,9 @@
   function applySection(sectionKey, data) {
     if (!currentData) currentData = {};
     switch (sectionKey) {
-      case 'resumen':
-        currentData.resumen = data;
-        // Restaurar el <p> si fue reemplazado por el loader
-        document.getElementById('resumenContent').innerHTML = '<p class="resumen-text" id="resumenText"></p>';
-        renderResumen(data);
+      case 'disparadores':
+        currentData.disparadores = data;
+        renderDisparadores(data);
         break;
       case 'entrevistas':
         currentData.entrevistas = data;
@@ -320,8 +318,12 @@
     if (!currentData) return '';
 
     switch (target) {
-      case 'resumen':
-        return currentData.resumen || '';
+      case 'disparadores': {
+        if (!currentData.disparadores) return '';
+        return currentData.disparadores.map(d =>
+          `${d.dato}\n→ ${d.comparacion}`
+        ).join('\n\n');
+      }
 
       case 'boletin': {
         const b = currentData.boletin;
@@ -576,8 +578,8 @@
 
   function renderAll(data) {
     renderBoletin(data.boletin);
-    renderResumen(data.resumen);
     renderContexto(data.contexto);
+    renderDisparadores(data.disparadores);
     renderEntrevistas(data.entrevistas);
     renderMusica(data.musica);
     renderVideos(data.videos);
@@ -614,12 +616,29 @@
   }
 
   // ==========================================
-  // RENDER: RESUMEN
+  // RENDER: DISPARADORES
   // ==========================================
 
-  function renderResumen(resumen) {
-    const el = document.getElementById('resumenText');
-    el.textContent = resumen || 'No hay resumen disponible.';
+  function renderDisparadores(disparadores) {
+    const list = document.getElementById('disparadoresList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!disparadores || !Array.isArray(disparadores) || disparadores.length === 0) {
+      list.innerHTML = '<div style="color:var(--gray-400);font-size:14px;">No se encontraron datos numéricos para disparadores.</div>';
+      return;
+    }
+
+    disparadores.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'contexto-item';
+      el.innerHTML = `
+        <div class="contexto-dato">${escapeHtml(upperES(item.dato || ''))}</div>
+        <span class="contexto-flecha">↓</span>
+        <div class="contexto-traduccion">${escapeHtml(item.comparacion || '')}</div>
+      `;
+      list.appendChild(el);
+    });
   }
 
   // ==========================================
@@ -1100,8 +1119,8 @@
 
         // Marcar como loaded las secciones que ya tienen datos en el historial
         sectionState = {};
-        if (currentData.resumen)     sectionState['resumen']      = 'loaded';
-        if (currentData.entrevistas) sectionState['entrevistas']  = 'loaded';
+        if (currentData.disparadores) sectionState['disparadores'] = 'loaded';
+        if (currentData.entrevistas)  sectionState['entrevistas']  = 'loaded';
         if (currentData.musica)      sectionState['musica']       = 'loaded';
         if (currentData.videos)      sectionState['videos']       = 'loaded';
         if (currentData.angulo || currentData.streaming) sectionState['angulo'] = 'loaded';

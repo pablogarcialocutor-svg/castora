@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import {
-  fetchArticle, analyzeBoletinContexto, analyzeResumen,
+  fetchArticle, analyzeBoletinContexto, analyzeDisparadores,
   analyzeEntrevistas, analyzeMusica, analyzeAnguloStreaming,
   fetchOtrasFuentes, fetchOpinion, getMoodTags,
 } from '../services/anthropic.js';
@@ -138,10 +138,10 @@ router.post('/process', requireAuth, async (req, res) => {
 // ==========================================
 // POST /api/section/:name — generación bajo demanda
 // Body: { url }
-// Secciones: resumen, entrevistas, musica, videos, angulo, otrasfuentes, opinion
+// Secciones: disparadores, entrevistas, musica, videos, angulo, otrasfuentes, opinion
 // ==========================================
 
-const VALID_SECTIONS = ['resumen', 'entrevistas', 'musica', 'videos', 'angulo', 'otrasfuentes', 'opinion'];
+const VALID_SECTIONS = ['disparadores', 'entrevistas', 'musica', 'videos', 'angulo', 'otrasfuentes', 'opinion'];
 
 router.post('/section/:name', requireAuth, async (req, res) => {
   const { name } = req.params;
@@ -183,10 +183,10 @@ router.post('/section/:name', requireAuth, async (req, res) => {
     let sectionData = null;
 
     switch (name) {
-      case 'resumen': {
-        const result = await analyzeResumen(articleData);
-        sectionData = result?.resumen || null;
-        logApiCall('resumen', url, t0, 600);
+      case 'disparadores': {
+        const result = await analyzeDisparadores(articleData);
+        sectionData = result?.disparadores || null;
+        logApiCall('disparadores', url, t0, 800);
         break;
       }
 
