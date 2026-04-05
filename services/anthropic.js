@@ -271,10 +271,7 @@ CRITERIO DE CALIDAD:
 - Las analogías con la vida cotidiana banal están PROHIBIDAS salvo que sean muy precisas y sorprendentes
 - PROHIBIDO: referencias a fútbol genérico, electrodomésticos, "el vecino", "el fin de semana", "el recreo"
 - Las comparaciones con dinero deben usar referencias concretas: salario mínimo, canasta básica, costo de una vivienda, presupuesto educativo — nunca solo "pesos al cambio"
-
-ROLES POLÍTICOS:
-- Antes de afirmar el cargo actual de cualquier político, usá web_search para confirmarlo
-- No asumir cargos basándose en información histórica — los cargos cambian
+- Para cargos políticos, usá únicamente lo que dice el texto de la noticia — no inferir ni completar con conocimiento externo
 
 TIPOS DE DISPARADORES A BUSCAR:
 1. Cifras económicas — con comparación en términos de salarios, presupuestos públicos, deuda nacional, PBI
@@ -291,7 +288,6 @@ Español rioplatense.`;
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1400,
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
     messages: [{ role: 'user', content: prompt }],
   }));
 
@@ -436,10 +432,10 @@ export async function fetchOtrasFuentes({ title, source, url }) {
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1200,
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+    tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 2 }],
     messages: [{
       role: 'user',
-      content: `Buscá en la web esta noticia cubierta por medios distintos a "${source}".
+      content: `Buscá en la web esta noticia cubierta por medios distintos a "${source}". Hacé MÁXIMO 1 búsqueda web.
 
 NOTICIA: ${title}
 URL ORIGINAL: ${url}
@@ -472,10 +468,10 @@ export async function fetchOpinion({ title, source }) {
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1200,
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+    tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 2 }],
     messages: [{
       role: 'user',
-      content: `Buscá columnas de opinión y análisis firmados sobre este tema:
+      content: `Buscá columnas de opinión y análisis firmados sobre este tema. Hacé MÁXIMO 1 búsqueda web.
 
 NOTICIA: ${title}
 
