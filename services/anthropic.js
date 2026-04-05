@@ -476,14 +476,23 @@ export async function fetchOpinion({ title, source }) {
 NOTICIA: ${title}
 
 Devolvé SOLO JSON puro, sin markdown:
-{"columnas":[{"columnista":"nombre completo del columnista","medio":"nombre del medio","titulo":"título de la columna","fecha":"fecha de publicación","url":"URL de la columna"}]}
+{"columnas":[{"columnista":"nombre completo","medio":"nombre del medio","pais":"país del medio","titulo":"título de la columna","fecha":"fecha de publicación","url":"URL","idioma":"es"}]}
 
-REGLAS ESTRICTAS:
+El campo "idioma" es el código ISO del idioma de la columna: es/en/pt/fr.
+
+MEDIOS DISPONIBLES — elegí los más relevantes según el tema de la noticia:
+ARGENTINA: La Nación, Infobae, Clarín, Página 12, Ámbito Financiero, El Cronista, Perfil, El Destape, Tiempo Argentino, MDZ, La Voz del Interior, Los Andes, El Litoral, Chequeado, Cenital, El Cohete a la Luna, Revista Crisis, Anfibia, Cosecha Roja, Agencia Paco Urondo, Letra P, Política Argentina, Periodismo de barrio, La tinta, Feminacida
+LATINOAMÉRICA: La Diaria, El Observador Uruguay, El Mercurio Chile, La Tercera, El Mostrador, Folha de S.Paulo, O Globo, El Tiempo Colombia, Semana, El Espectador, El Universal México, Proceso México, La Jornada, El Comercio Perú, La República Perú, NACLA, Desinformémonos, Sin Embargo México, Confidencial Nicaragua, Gatopardo, Pie de Página, El Faro El Salvador, IDL Reporteros Perú, Agência Pública Brasil, Nexo Jornal, Revista Piauí, CIPER Chile, The Clinic Chile
+EEUU Y CANADÁ: The New York Times, The Washington Post, The Wall Street Journal, Bloomberg, Reuters, AP, NPR, The Atlantic, Politico, Foreign Policy, The Nation, Fox News, Mother Jones, The Intercept, ProPublica, Democracy Now, Jacobin, The New Yorker, Vox, Axios, Newsweek, The Narwhal
+EUROPA: The Guardian, Financial Times, The Economist, BBC, Le Monde, Le Figaro, El País, El Mundo, La Vanguardia, Der Spiegel, Frankfurter Allgemeine, La Repubblica, Corriere della Sera, Mediapart, eldiario.es, Ctxt, infoLibre, Público España, La Stampa, Die Zeit, Taz, The Independent, openDemocracy
+RESTO DEL MUNDO: Al Jazeera, South China Morning Post, The Times of India, Haaretz, Daily Maverick, Middle East Eye, +972 Magazine, The Wire India, Malaysiakini, New Frame Sudáfrica, Rappler Filipinas
+
+REGLAS:
 - Mínimo 4 columnas, máximo 8
-- PROHIBIDO repetir autor — cada columnista debe aparecer una sola vez
+- PROHIBIDO repetir autor
 - Solo columnas de opinión o análisis firmados por una persona, no notas informativas ni editoriales sin firma
 - El tema debe ser específicamente sobre esta noticia o su contexto directo
-- Priorizar en este orden: (1) periodistas argentinos reconocidos como Jorge Lanata, Martín Caparrós, María O'Donnell, Nelson Castro, Beatriz Sarlo, Graciela Mochkofsky, Martín Sivak, Gabriela Cerruti, Luciana Peker, Sergio Kiernan, Horacio Verbitsky, Eduardo van der Kooy; (2) otros columnistas latinoamericanos de referencia; (3) columnistas internacionales en inglés de medios como NYT, The Guardian, The Economist solo si el tema lo justifica
+- Sin etiquetas ideológicas
 - Incluir fecha de publicación
 - Ordenar por relevancia y trayectoria del columnista`,
     }],
@@ -494,5 +503,30 @@ REGLAS ESTRICTAS:
     if (block.type === 'text') text += block.text;
   }
 
-  return parseJsonResponse(text);
+  try {
+    return parseJsonResponse(text);
+  } catch {
+    return { columnas: [] };
+  }
+}
+
+// ==========================================
+// TRADUCCIÓN — título de columna al español
+// ==========================================
+
+export async function translateText(input) {
+  const response = await callWithRetry(() => client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 300,
+    messages: [{
+      role: 'user',
+      content: `Traducí al español rioplatense el siguiente texto. Devolvé SOLO el texto traducido, sin explicaciones ni comillas.\n\n${input}`,
+    }],
+  }));
+
+  let out = '';
+  for (const block of response.content) {
+    if (block.type === 'text') out += block.text;
+  }
+  return out.trim();
 }

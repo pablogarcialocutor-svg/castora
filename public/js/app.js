@@ -1036,25 +1036,69 @@
     list.innerHTML = '';
 
     if (!columnas || !Array.isArray(columnas) || columnas.length === 0) {
-      list.innerHTML = '<div class="opinion-unavailable">No encontramos columnas de opinión sobre este tema. Probá con una noticia de mayor repercusión mediática.</div>';
+      list.innerHTML = '<div class="opinion-unavailable">No encontramos columnas sobre este tema.</div>';
       return;
     }
 
+    const IDIOMA_LABEL = { en: 'English', pt: 'Português', fr: 'Français' };
+
     columnas.forEach(c => {
+      const isForeing = c.idioma && c.idioma !== 'es';
       const card = document.createElement('a');
       card.className = 'opinion-card';
       card.href = escapeHtml(c.url || '#');
       card.target = '_blank';
       card.rel = 'noopener noreferrer';
+
+      const medioYPais = [c.medio, c.pais].filter(Boolean).map(escapeHtml).join(' · ');
+      const idiomaHtml = isForeing
+        ? `<span class="opinion-idioma">${IDIOMA_LABEL[c.idioma] || escapeHtml(c.idioma)}</span>`
+        : '';
+      const traducirHtml = isForeing
+        ? `<button class="opinion-traducir" data-titulo="${escapeHtml(c.titulo || '')}">Traducir</button>`
+        : '';
+
       card.innerHTML = `
         <div class="opinion-columnista">${escapeHtml(c.columnista || '')}</div>
         <div class="opinion-titulo">${escapeHtml(c.titulo || '')}</div>
         <div class="opinion-medio-fecha">
-          ${c.medio ? `<span class="opinion-medio">${escapeHtml(c.medio)}</span>` : ''}
+          ${medioYPais ? `<span class="opinion-medio">${medioYPais}</span>` : ''}
           ${c.fecha ? `<span class="opinion-fecha">${escapeHtml(c.fecha)}</span>` : ''}
+          ${idiomaHtml}
         </div>
-        <div class="opinion-arrow">Leer columna →</div>
+        <div class="opinion-footer">
+          <div class="opinion-arrow">Leer columna →</div>
+          ${traducirHtml}
+        </div>
       `;
+
+      if (isForeing) {
+        const btn = card.querySelector('.opinion-traducir');
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          btn.disabled = true;
+          btn.textContent = 'Traduciendo…';
+          try {
+            const res = await fetch('/api/section/traducir', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: c.titulo }),
+            });
+            const json = await res.json();
+            if (json.success && json.data) {
+              const tituloEl = card.querySelector('.opinion-titulo');
+              tituloEl.textContent = json.data;
+              btn.remove();
+            } else {
+              btn.textContent = 'Error';
+            }
+          } catch {
+            btn.textContent = 'Error';
+          }
+        });
+      }
+
       list.appendChild(card);
     });
   }

@@ -3,7 +3,7 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import {
   fetchArticle, analyzeBoletinContexto, analyzeDisparadores,
   analyzeEntrevistas, analyzeMusica, analyzeAnguloStreaming,
-  fetchOtrasFuentes, fetchOpinion, getMoodTags,
+  fetchOtrasFuentes, fetchOpinion, getMoodTags, translateText,
 } from '../services/anthropic.js';
 import { searchVideos, buildMusicSearchUrl, generateVideoSearchQueries } from '../services/youtube.js';
 import { getTopTracksByTags } from '../services/lastfm.js';
@@ -141,15 +141,29 @@ router.post('/process', requireAuth, async (req, res) => {
 // Secciones: disparadores, entrevistas, musica, videos, angulo, otrasfuentes, opinion
 // ==========================================
 
-const VALID_SECTIONS = ['disparadores', 'entrevistas', 'musica', 'videos', 'angulo', 'otrasfuentes', 'opinion'];
+const VALID_SECTIONS = ['disparadores', 'entrevistas', 'musica', 'videos', 'angulo', 'otrasfuentes', 'opinion', 'traducir'];
 
 router.post('/section/:name', requireAuth, async (req, res) => {
   const { name } = req.params;
-  const { url } = req.body;
+  const { url, text } = req.body;
 
   if (!VALID_SECTIONS.includes(name)) {
     return res.status(400).json({ error: 'Sección inválida' });
   }
+
+  // Traducción: no necesita URL ni caché
+  if (name === 'traducir') {
+    if (!text || typeof text !== 'string') {
+      return res.status(400).json({ error: 'Texto requerido' });
+    }
+    try {
+      const translated = await translateText(text);
+      return res.json({ success: true, data: translated });
+    } catch (err) {
+      return res.status(500).json({ error: err.message || 'Error al traducir' });
+    }
+  }
+
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'URL requerida' });
   }
