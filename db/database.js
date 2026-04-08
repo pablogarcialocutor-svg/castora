@@ -7,7 +7,9 @@ const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const DB_PATH = join(__dirname, 'castora.db');
+const DB_PATH = (process.env.RENDER || process.env.NODE_ENV === 'production')
+  ? '/data/castora.db'
+  : join(__dirname, 'castora.db');
 
 let db = null;
 let SQL = null;
