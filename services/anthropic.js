@@ -487,6 +487,8 @@ EEUU Y CANADÁ: The New York Times, The Washington Post, The Wall Street Journal
 EUROPA: The Guardian, Financial Times, The Economist, BBC, Le Monde, Le Figaro, El País, El Mundo, La Vanguardia, Der Spiegel, Frankfurter Allgemeine, La Repubblica, Corriere della Sera, Mediapart, eldiario.es, Ctxt, infoLibre, Público España, La Stampa, Die Zeit, Taz, The Independent, openDemocracy
 RESTO DEL MUNDO: Al Jazeera, South China Morning Post, The Times of India, Haaretz, Daily Maverick, Middle East Eye, +972 Magazine, The Wire India, Malaysiakini, New Frame Sudáfrica, Rappler Filipinas
 
+Si no encontrás columnas de opinión firmadas sobre el tema exacto, buscá también: editoriales institucionales de los medios, análisis firmados, notas de color político o económico con autor visible, y columnas sobre temas relacionados (por ejemplo, si la noticia es sobre el FMI y Caputo, buscá columnas sobre política económica argentina, deuda externa, o el gobierno de Milei). Priorizá siempre contenido con autor identificable. Para noticias argentinas, buscá primero en medios argentinos de la lista antes de ir a internacionales.
+
 REGLAS:
 - Mínimo 4 columnas, máximo 8
 - PROHIBIDO repetir autor
