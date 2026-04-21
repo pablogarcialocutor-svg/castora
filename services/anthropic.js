@@ -287,7 +287,7 @@ JSON:
 
 Analizá la noticia en profundidad y generá entre 5 y 6 disparadores de alto impacto para un conductor de radio.
 
-CRITERIO DE CALIDAD: cada disparador debe tener una paradoja, contradicción, ironía o dato que sorprenda. Si no sorprende, no va. Prohibido los disparadores obvios o que repitan lo que ya dice el título de la noticia.
+CRITERIO DE CALIDAD: cada disparador debe cambiar o profundizar la lectura de la noticia. Puede ser una paradoja, una ironía, un dato duro que reencuadra el hecho, una consecuencia no obvia, una contradicción ideológica, o simplemente el dato más relevante presentado de forma que golpee. Lo que no puede ser: obvio, predecible, o algo que cualquiera diría sin haber leído la nota. Prohibido los disparadores que repitan lo que ya dice el título de la noticia.
 
 FORMATO:
 - Dato o hecho en mayúsculas (máximo 15 palabras, directo, sin rodeos)
