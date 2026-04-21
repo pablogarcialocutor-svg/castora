@@ -496,6 +496,11 @@ Si no encontrás columnas de opinión firmadas sobre el tema exacto, buscá tamb
 
 Si la búsqueda inicial no devuelve columnas de opinión, intentá con términos más amplios relacionados con el tema. Por ejemplo: si la noticia es sobre discapacidad, buscá "columnas discapacidad Argentina", "opinión política discapacidad", "análisis ley discapacidad". Si es sobre economía, buscá columnistas económicos que hayan escrito sobre el tema en los últimos 6 meses. Nunca devolver array vacío sin haber intentado al menos 2 búsquedas con términos distintos.
 
+Estrategia de búsqueda en dos pasos:
+1. Primero buscá columnas de opinión sobre los protagonistas y hechos específicos de la noticia.
+2. Si no encontrás resultados relevantes, identificá el tema de fondo (corrupción, violencia, economía, educación, etc.) y buscá columnas sobre ese tema más amplio en los últimos 6 meses.
+Nunca devolver vacío sin haber intentado ambos pasos.
+
 REGLAS:
 - Mínimo 4 columnas, máximo 8
 - PROHIBIDO repetir autor
