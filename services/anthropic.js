@@ -213,8 +213,11 @@ REGLAS BOLETÍN:
 - PROHIBIDO usar dos puntos, comillas o puntos suspensivos
 - El título es siempre una afirmación directa, nunca una pregunta. Sujeto + verbo + predicado, sin subordinadas ni aclaraciones entre comas. Estilo radio, no gráfica. Si el hecho necesita contexto, ese contexto va en la primera bajada, no en el título.
 - El título tiene máximo 14 palabras
+- TÍTULO PROTAGONISTA: mencionar siempre al protagonista por nombre o cargo concreto, nunca por referencia vaga. "MILEI DELEGÓ EN CAPUTO" es mejor que "MILEI DELEGÓ EN ECONOMÍA". Evitar sustantivos abstractos como "control", "manejo", "gestión" — usar verbos de acción directa.
 - Las bajadas van de lo más importante a lo menos importante
+- ORDEN DE BAJADAS: el dato más impactante para el oyente común va primero. Si hay una cifra de personas afectadas (hogares, trabajadores, ciudadanos), esa información tiene prioridad sobre los detalles técnicos o normativos.
 - Generar 3 bajadas siempre que la noticia tenga más de un ángulo relevante, varios actores, datos numéricos importantes o consecuencias significativas. Generar solo 2 bajadas únicamente si la noticia es muy simple y no hay más información relevante.
+- PRIMERA BAJADA: debe ser comprensible para alguien que escucha la radio mientras maneja. Evitar acumulación de datos técnicos, porcentajes y nombres de fondos en una sola oración. Si hay datos técnicos necesarios, distribuirlos entre las bajadas.
 - PROHIBIDO repetir palabras clave, nombres propios o verbos entre título y bajadas
 - Usar sinónimos y variaciones para evitar repeticiones
 - Cada bajada aporta información nueva, no repite lo del título con otras palabras
