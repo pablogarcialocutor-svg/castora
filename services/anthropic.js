@@ -251,6 +251,7 @@ REGLAS CONTEXTO:
 - NO incluir bloques llamados "Lo que no dice la noticia" ni "Impacto real en la gente común"
 - Si un bloque no aplica a la noticia, no aparece. Nada forzado.
 - Tono riguroso pero accesible. Como un buen columnista de radio.
+- FORMATO DE TEXTO: los títulos de cada bloque (ANTECEDENTES HISTÓRICOS, ACTORES Y PODER, DATOS EN PERSPECTIVA, LO QUE NO CIERRA) van en MAYÚSCULAS. El contenido de cada bloque en minúsculas, con mayúscula solo al inicio de cada oración y en nombres propios.
 
 Español rioplatense.`;
 
