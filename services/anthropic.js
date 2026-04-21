@@ -307,6 +307,10 @@ TIPOS DE DISPARADORES A BUSCAR:
 4. Ironías de poder — quién gana y quién pierde sin que nadie lo diga explícitamente
 5. Lo que la foto no muestra — el dato que está en la noticia pero nadie va a destacar
 
+INSTRUCCIÓN CRÍTICA: el mejor disparador no está en la nota, está debajo de ella. Antes de escribir cada disparador preguntate: ¿qué implica este hecho que la nota no dice? ¿Qué consecuencia no obvia tiene? ¿Qué revela sobre un actor que él preferiría que no se note? ¿Qué dato de contexto externo cambia completamente la lectura de este hecho?
+
+Sobre los datos factuales: no reproducir el estado de situación de la nota como si fuera actual. Si la nota dice que alguien viaja, verificar si ya llegó. Si dice que algo va a pasar, considerar que puede ya haber pasado. Trabajar siempre con la situación más probable al momento de la lectura, no al momento de la redacción de la nota.
+
 Español rioplatense.`;
 
   const response = await callWithRetry(() => client.messages.create({
