@@ -277,36 +277,35 @@ Español rioplatense.`;
 // ==========================================
 
 export async function analyzeDisparadores({ content }) {
-  const prompt = `Producción periodística radio/streaming. Devolvé SOLO JSON puro, sin markdown.
+  const prompt = `Devolvé SOLO JSON puro, sin markdown.
 
 NOTICIA:
 ${content.slice(0, 4000)}
 
+JSON:
 {"disparadores":[{"dato":"dato o elemento de la noticia","comparacion":"vuelta de rosca en una oración"}]}
 
-TAREA: Analizá la noticia en profundidad y extraé todos los elementos que un conductor de radio puede usar como gancho, dato sorprendente o punto de entrada. No solo números — también fechas históricas, comparaciones geográficas, récords, paradojas, contradicciones, personajes secundarios relevantes, consecuencias no obvias.
+Analizá la noticia en profundidad y generá entre 5 y 6 disparadores de alto impacto para un conductor de radio.
 
-REGLAS DE FORMATO:
-- El campo "dato" es una oración corta con el elemento de la noticia
-- El campo "comparacion" es una sola oración con la vuelta de rosca — máximo 2 líneas en total entre dato y comparacion
-- PROHIBIDO párrafos largos o explicaciones extendidas
+CRITERIO DE CALIDAD: cada disparador debe tener una paradoja, contradicción, ironía o dato que sorprenda. Si no sorprende, no va. Prohibido los disparadores obvios o que repitan lo que ya dice el título de la noticia.
 
-CRITERIO DE CALIDAD:
-- Priorizar disparadores con paradoja, contradicción o ironía política o histórica — esos son los más valiosos para radio
-- Las analogías con la vida cotidiana banal están PROHIBIDAS salvo que sean muy precisas y sorprendentes
-- PROHIBIDO: referencias a fútbol genérico, electrodomésticos, "el vecino", "el fin de semana", "el recreo"
-- Las comparaciones con dinero deben usar referencias concretas: salario mínimo, canasta básica, costo de una vivienda, presupuesto educativo — nunca solo "pesos al cambio"
-- Para cargos políticos, usá únicamente lo que dice el texto de la noticia — no inferir ni completar con conocimiento externo
+FORMATO:
+- Dato o hecho en mayúsculas (máximo 15 palabras, directo, sin rodeos)
+- Flecha ↓
+- Vuelta de rosca: la contradicción, la ironía o el dato inesperado que hace pensar. Máximo 2 líneas. Acá puede entrar subjetividad, humor inteligente, paradoja política. Es el gancho para el conductor.
+
+PROHIBIDO:
+- Disparadores que repitan información entre sí
+- Datos que no estén en la noticia o no sean verificables
+- Comparaciones banales o de vida cotidiana genérica
+- Afirmar cargos o situaciones sin verificar — si la noticia dice que alguien viaja, no asumir que ya llegó
 
 TIPOS DE DISPARADORES A BUSCAR:
-1. Cifras económicas — con comparación en términos de salarios, presupuestos públicos, deuda nacional, PBI
-2. Tiempo — años, décadas, con referencia a qué pasaba en ese momento históricamente
-3. Escala geográfica — si hay una cifra, compararla con el PBI o presupuesto de un país o provincia
-4. Paradojas — algo contradictorio o irónico que surge de los datos
-5. Récords o primeras veces — si algo es histórico, explicar por qué
-6. Consecuencias no obvias — qué implica este dato para algo aparentemente no relacionado
-
-Mínimo 6 disparadores, máximo 8. Solo incluir los que sean realmente relevantes y sorprendentes.
+1. Paradojas políticas — quién está donde no debería estar, quién falta donde debería estar
+2. Contradicciones ideológicas — un gobierno o partido actuando contra sus propios principios
+3. Datos históricos — primera vez que algo pasa, récord, hecho sin precedente
+4. Ironías de poder — quién gana y quién pierde sin que nadie lo diga explícitamente
+5. Lo que la foto no muestra — el dato que está en la noticia pero nadie va a destacar
 
 Español rioplatense.`;
 
