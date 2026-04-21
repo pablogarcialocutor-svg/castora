@@ -206,6 +206,8 @@ JSON:
 {"title":"","source":"","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"titulo":"NOMBRE DEL BLOQUE","contenido":"texto del bloque"}]}
 
 REGLAS BOLETÍN:
+- OBJETIVIDAD ABSOLUTA: información pura, sin adjetivos valorativos, sin opinión implícita ni explícita, sin palabras que sugieran aprobación o crítica. Estándar Reuters/AP.
+- NÚMEROS: usar siempre cifras numéricas combinadas con palabras cuando ayuda a la lectura. Ejemplos correctos: "3 millones", "USD 18.000 millones", "2,9%". PROHIBIDO escribir números solo en letras: nunca "tres millones", nunca "dieciocho mil millones de dólares".
 - Registro formal, nunca coloquial
 - Siempre sujeto + verbo + predicado. Sin fragmentos ni telegrafismo
 - PROHIBIDO usar dos puntos, comillas o puntos suspensivos
