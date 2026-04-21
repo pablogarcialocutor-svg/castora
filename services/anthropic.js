@@ -494,6 +494,8 @@ RESTO DEL MUNDO: Al Jazeera, South China Morning Post, The Times of India, Haare
 
 Si no encontrás columnas de opinión firmadas sobre el tema exacto, buscá también: editoriales institucionales de los medios, análisis firmados, notas de color político o económico con autor visible, y columnas sobre temas relacionados (por ejemplo, si la noticia es sobre el FMI y Caputo, buscá columnas sobre política económica argentina, deuda externa, o el gobierno de Milei). Priorizá siempre contenido con autor identificable. Para noticias argentinas, buscá primero en medios argentinos de la lista antes de ir a internacionales.
 
+Si la búsqueda inicial no devuelve columnas de opinión, intentá con términos más amplios relacionados con el tema. Por ejemplo: si la noticia es sobre discapacidad, buscá "columnas discapacidad Argentina", "opinión política discapacidad", "análisis ley discapacidad". Si es sobre economía, buscá columnistas económicos que hayan escrito sobre el tema en los últimos 6 meses. Nunca devolver array vacío sin haber intentado al menos 2 búsquedas con términos distintos.
+
 REGLAS:
 - Mínimo 4 columnas, máximo 8
 - PROHIBIDO repetir autor
