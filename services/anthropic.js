@@ -222,10 +222,13 @@ REGLAS BOLETÍN:
 - Todo en mayúsculas con tildes correctas
 
 REGLAS CONTEXTO:
+- OBJETIVIDAD: el contexto debe presentar hechos y datos verificables sin seguir la línea editorial de la noticia. Sin análisis político ni toma de partido. Neutral como un analista sin posición.
+- Cada bloque tiene máximo 3 líneas de texto. Conciso y directo. Sin párrafos largos.
 - Generar entre 2 y 4 bloques según lo que la noticia realmente justifique. Si no hay datos relevantes, no forzar.
 - BLOQUE "DATOS EN PERSPECTIVA": solo si la noticia tiene números o cifras relevantes. Traducirlos a comparaciones concretas y naturales con otras realidades. PROHIBIDO comparaciones forzadas o poco creíbles.
 - BLOQUE "ANTECEDENTES HISTÓRICOS": solo si existe un precedente real y relevante. Explicarlo en 3-4 oraciones. Si no hay precedente claro, omitir este bloque.
 - BLOQUE "ACTORES Y PODER": quiénes son los protagonistas reales, qué intereses tienen, qué poder tienen para cambiar el resultado. Sin jerga política.
+- BLOQUE "LO QUE NO CIERRA" (siempre incluir): identificar contradicciones, datos que no coinciden, o preguntas que la nota no responde. Máximo 3 puntos. Formato: pregunta o contradicción directa, sin desarrollo largo.
 - NO incluir bloques llamados "Lo que no dice la noticia" ni "Impacto real en la gente común"
 - Si un bloque no aplica a la noticia, no aparece. Nada forzado.
 - Tono riguroso pero accesible. Como un buen columnista de radio.
