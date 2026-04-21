@@ -205,24 +205,40 @@ ${content.slice(0, 4000)}
 JSON:
 {"title":"","source":"","boletin":{"titulo":"TÍTULO EN MAYÚSCULAS","bajadas":["BAJADA 1","BAJADA 2"]},"contexto":[{"titulo":"NOMBRE DEL BLOQUE","contenido":"texto del bloque"}]}
 
-REGLAS BOLETÍN:
-- OBJETIVIDAD ABSOLUTA: información pura, sin adjetivos valorativos, sin opinión implícita ni explícita, sin palabras que sugieran aprobación o crítica. Estándar Reuters/AP.
-- NÚMEROS: usar siempre cifras numéricas combinadas con palabras cuando ayuda a la lectura. Ejemplos correctos: "3 millones", "USD 18.000 millones", "2,9%". PROHIBIDO escribir números solo en letras: nunca "tres millones", nunca "dieciocho mil millones de dólares".
+Escribí un boletín de radio en español rioplatense con el siguiente formato:
+
+TÍTULO
+- Máximo 14 palabras
+- Afirmación directa, nunca pregunta
+- Sujeto + verbo + predicado, sin subordinadas ni aclaraciones entre comas
+- Mencionar al protagonista por nombre o cargo concreto
+- Estilo radio, no gráfica
+- Si el hecho necesita contexto, va en la primera bajada, no en el título
+
+BAJADAS
+- Entre 2 y 3 bajadas según la importancia de la noticia
+- 3 bajadas cuando hay múltiples ángulos relevantes, varios actores o datos importantes
+- 2 bajadas solo si la noticia es muy simple
+- El dato más impactante para el oyente común va primero
+- Si hay cifra de personas afectadas, esa información tiene prioridad sobre detalles técnicos
+- Cada bajada aporta información nueva, no repite lo del título ni de las otras bajadas
+- Evitar acumulación de datos técnicos en una sola oración
+- Primera bajada comprensible para alguien que escucha la radio mientras maneja
+
+PROHIBICIONES ABSOLUTAS
+- Dos puntos
+- Comillas
+- Puntos suspensivos
+- Opinión implícita o explícita
+- Adjetivos valorativos
+- Números escritos solo en letras — usar siempre cifras: "3 millones", "USD 18.000 millones", nunca "tres millones"
+- Repetir palabras clave entre título y bajadas
+- Repetir el mismo sujeto al inicio de bajadas consecutivas
+
+ESTILO
 - Registro formal, nunca coloquial
-- Siempre sujeto + verbo + predicado. Sin fragmentos ni telegrafismo
-- PROHIBIDO usar dos puntos, comillas o puntos suspensivos
-- El título es siempre una afirmación directa, nunca una pregunta. Sujeto + verbo + predicado, sin subordinadas ni aclaraciones entre comas. Estilo radio, no gráfica. Si el hecho necesita contexto, ese contexto va en la primera bajada, no en el título.
-- El título tiene máximo 14 palabras
-- TÍTULO PROTAGONISTA: mencionar siempre al protagonista por nombre o cargo concreto, nunca por referencia vaga. "MILEI DELEGÓ EN CAPUTO" es mejor que "MILEI DELEGÓ EN ECONOMÍA". Evitar sustantivos abstractos como "control", "manejo", "gestión" — usar verbos de acción directa.
-- Las bajadas van de lo más importante a lo menos importante
-- ORDEN DE BAJADAS: el dato más impactante para el oyente común va primero. Si hay una cifra de personas afectadas (hogares, trabajadores, ciudadanos), esa información tiene prioridad sobre los detalles técnicos o normativos.
-- Generar 3 bajadas siempre que la noticia tenga más de un ángulo relevante, varios actores, datos numéricos importantes o consecuencias significativas. Generar solo 2 bajadas únicamente si la noticia es muy simple y no hay más información relevante.
-- PRIMERA BAJADA: debe ser comprensible para alguien que escucha la radio mientras maneja. Evitar acumulación de datos técnicos, porcentajes y nombres de fondos en una sola oración. Si hay datos técnicos necesarios, distribuirlos entre las bajadas.
-- PROHIBIDO repetir palabras clave, nombres propios o verbos entre título y bajadas
-- Usar sinónimos y variaciones para evitar repeticiones
-- Cada bajada aporta información nueva, no repite lo del título con otras palabras
-- PROHIBIDO empezar una bajada con el mismo sujeto que el título
-- Todo en mayúsculas con tildes correctas
+- Objetividad absoluta, estándar Reuters/AP
+- Todo en mayúsculas
 
 REGLAS CONTEXTO:
 - OBJETIVIDAD: el contexto debe presentar hechos y datos verificables sin seguir la línea editorial de la noticia. Sin análisis político ni toma de partido. Neutral como un analista sin posición.
