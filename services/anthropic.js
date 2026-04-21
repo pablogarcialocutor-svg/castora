@@ -211,10 +211,10 @@ REGLAS BOLETÍN:
 - Registro formal, nunca coloquial
 - Siempre sujeto + verbo + predicado. Sin fragmentos ni telegrafismo
 - PROHIBIDO usar dos puntos, comillas o puntos suspensivos
-- El título es siempre una afirmación, nunca una pregunta
-- El título tiene máximo una línea y media, máximo 15 palabras
+- El título es siempre una afirmación directa, nunca una pregunta. Sujeto + verbo + predicado, sin subordinadas ni aclaraciones entre comas. Estilo radio, no gráfica. Si el hecho necesita contexto, ese contexto va en la primera bajada, no en el título.
+- El título tiene máximo 14 palabras
 - Las bajadas van de lo más importante a lo menos importante
-- 2 bajadas si la noticia es simple, 3 solo si la información lo justifica
+- Generar 3 bajadas siempre que la noticia tenga más de un ángulo relevante, varios actores, datos numéricos importantes o consecuencias significativas. Generar solo 2 bajadas únicamente si la noticia es muy simple y no hay más información relevante.
 - PROHIBIDO repetir palabras clave, nombres propios o verbos entre título y bajadas
 - Usar sinónimos y variaciones para evitar repeticiones
 - Cada bajada aporta información nueva, no repite lo del título con otras palabras
