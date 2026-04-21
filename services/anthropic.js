@@ -473,10 +473,13 @@ export async function fetchOpinion({ title, source }) {
   const response = await callWithRetry(() => client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1200,
-    tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 2 }],
+    tools: [{ type: 'web_search_20250305', name: 'web_search', max_uses: 3 }],
+    tool_choice: { type: 'auto' },
     messages: [{
       role: 'user',
-      content: `Buscá columnas de opinión y análisis firmados sobre este tema. Hacé MÁXIMO 1 búsqueda web.
+      content: `OBLIGATORIO: antes de responder debés realizar al menos una búsqueda web usando el tool disponible. Nunca respondas sin haber buscado primero.
+
+Buscá columnas de opinión y análisis firmados sobre este tema.
 
 NOTICIA: ${title}
 
